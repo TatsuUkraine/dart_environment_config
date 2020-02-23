@@ -7,17 +7,18 @@ import 'config_data_provider.dart';
 import 'config_class_generator.dart';
 import 'config_loader.dart';
 
-const _CONFIG_KEY = 'config';
-
 void generateConfig(List<String> arguments) async {
-  ArgParser parser = new ArgParser.allowAnything();
+  ArgParser parser = new ArgParser()
+    ..addOption(ConfigDataProvider.CONFIG_COMMAND_KEY);
 
-  final ArgResults argResults = parser.parse(arguments);
+  final ArgResults argResults = parser.parse(
+    arguments.where((arg) => arg.contains('--${ConfigDataProvider.CONFIG_COMMAND_KEY}='))
+  );
 
   String configPath;
 
-  if (argResults.options.contains(_CONFIG_KEY)) {
-    configPath = argResults[_CONFIG_KEY];
+  if (argResults.options.contains(ConfigDataProvider.CONFIG_COMMAND_KEY)) {
+    configPath = argResults[ConfigDataProvider.CONFIG_COMMAND_KEY];
   }
 
   try {

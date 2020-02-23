@@ -6,8 +6,10 @@ import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
 
 class ConfigDataProvider {
+  static const String CONFIG_COMMAND_KEY = 'config';
+
   static const String _FIELDS_KEY = 'fields';
-  static const String _OUTPUT_KEY = 'output';
+  static const String _PATH_KEY = 'path';
   static const String _SHORT_NAME_KEY = 'short_name';
   static const String _IMPORTS_KEY = 'imports';
 
@@ -24,6 +26,8 @@ class ConfigDataProvider {
     }
 
     final params = config[_FIELDS_KEY];
+
+    parser.addOption(CONFIG_COMMAND_KEY);
 
     params.keys.forEach((key) {
       if (params[key] is! YamlMap) {
@@ -45,7 +49,7 @@ class ConfigDataProvider {
     );
   }
 
-  String get filePath => _getConfigValue(_OUTPUT_KEY, 'lib/environment_config.dart');
+  String get filePath => _getConfigValue(_PATH_KEY, 'lib/environment_config.dart');
 
   String get className {
     String className = _getConfigValue('class');
