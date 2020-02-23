@@ -108,13 +108,9 @@ class FieldDataProvider {
     if ((_value ?? field[_DEFAULT_KEY] ?? '').isEmpty) {
       throw ValidationError(name, '"$name" is required');
     }
-
-    if ((type ?? '').isEmpty) {
-      throw ValidationError(name, 'Type for "$name" is missing');
-    }
   }
 
-  String get type => field[_TYPE_KEY];
+  String get type => field[_TYPE_KEY] ?? 'String';
 
   FieldModifier get modifier {
     if (field[_CONST_KEY] ?? true) {
