@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:environment_config/argument_parser.dart';
 
 import 'errors/config_error.dart';
