@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 
-import 'config_data_provider.dart';
+import 'config.dart';
 
 class ConfigClassGenerator {
-  final ConfigDataProvider config;
+  final Config config;
 
   ConfigClassGenerator(this.config);
 

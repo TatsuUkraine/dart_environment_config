@@ -12,10 +12,13 @@ const List<String> _CONFIG_FILES = const [
 const String _CONFIG_KEY = 'environment_config';
 
 Future<YamlMap> loadConfig(String path) async {
-  final files = [..._CONFIG_FILES];
+  List<String> files = [..._CONFIG_FILES];
 
   if (path != null) {
-    files.add(path);
+    files = [
+      path,
+      ...files,
+    ];
   }
 
   for (String file in files) {

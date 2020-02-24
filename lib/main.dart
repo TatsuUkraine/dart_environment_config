@@ -1,32 +1,22 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:environment_config/argument_parser.dart';
 
 import 'errors/config_error.dart';
-import 'config_data_provider.dart';
+import 'config.dart';
 import 'config_class_generator.dart';
 import 'config_loader.dart';
 
 void generateConfig(List<String> arguments) async {
-  ArgParser parser = new ArgParser()
-    ..addOption(ConfigDataProvider.CONFIG_COMMAND_KEY);
-
-  final ArgResults argResults = parser.parse(
-    arguments.where((arg) => arg.contains('--${ConfigDataProvider.CONFIG_COMMAND_KEY}='))
-  );
-
-  String configPath;
-
-  if (argResults.options.contains(ConfigDataProvider.CONFIG_COMMAND_KEY)) {
-    configPath = argResults[ConfigDataProvider.CONFIG_COMMAND_KEY];
-  }
+  final parser = ArgumentParser(arguments);
 
   try {
-    final config = ConfigDataProvider.fromArguments(
-      arguments,
-      await loadConfig(
-        configPath
-      )
+    final yamlConfig = await loadConfig(parser.parseConfigPath());
+
+    final config = Config(
+      yamlConfig,
+      parser.parseArguments(yamlConfig)
     );
 
     await ConfigClassGenerator(config).generate();
