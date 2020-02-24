@@ -13,8 +13,7 @@ dependencies:
   args: ^1.5.2
   yaml: ^2.2.0
 
+# Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
 environment_config:
   fields:
     env:
-      type: String
-      const: false
