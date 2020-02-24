@@ -3,6 +3,7 @@ import 'package:yaml/yaml.dart';
 
 import 'config_field.dart';
 import 'errors/malformed_config_error.dart';
+import 'errors/validation_error.dart';
 
 class ArgumentParser {
 
@@ -30,6 +31,10 @@ class ArgumentParser {
 
     if (!config.containsKey(ConfigField.FIELDS)) {
       throw MalformedConfigError('"fields" key is missing');
+    }
+
+    if (config[ConfigField.FIELDS] == null) {
+      throw ValidationError(ConfigField.FIELDS, 'At least one field should be specified');
     }
 
     final params = config[ConfigField.FIELDS];
