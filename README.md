@@ -35,6 +35,8 @@ environment_config:
     - package:some_package
 ```
 
+Run `pub get` to install dependencies.
+
 After config is specified in YAML file run following command
 
 ```
@@ -47,7 +49,27 @@ flutter pub run environment_config:generate --some_key=some_value
 ```
 
 This command with generate file, that was specified in `path` key with
-class with fields and name specified in yaml config.
+class, fields and name specified in yaml config.
+
+Import this file into your application and use it.
+
+**Note:** It's recommended to add generated config file to `.gitignore`
+
+## Why this package is needed?
+
+This package allows to integrate config generation based on environment
+in an easy way.
+
+Unlike most env specific configurations this package can be added to  
+CI/CD build process to generate config file with values, that specific to  
+particular env, without need to specify your Prod credentials  
+anywhere except your build process.
+
+Obviously this package doesn't obfuscate or encrypt config values, but
+generated Dart file will be build and obfuscated with rest of  
+your mobile application code. If you want to secure your sensitive
+information you can use encrypted values and **pattern** key to wrap it
+with your decrypt library
 
 ## Config
 
