@@ -12,6 +12,7 @@ class ConfigDataProvider {
   static const String _PATH_KEY = 'path';
   static const String _SHORT_NAME_KEY = 'short_name';
   static const String _IMPORTS_KEY = 'imports';
+  static const String _CLASS_KEY = 'class';
 
   final ArgResults arguments;
   final YamlMap config;
@@ -49,16 +50,18 @@ class ConfigDataProvider {
     );
   }
 
-  String get filePath => _getConfigValue(_PATH_KEY, 'lib/environment_config.dart');
+  String get filePath {
+    return 'lib/${_getConfigValue(_PATH_KEY, 'environment_config.dart')}';
+  }
 
   String get className {
-    String className = _getConfigValue('class');
+    String className = _getConfigValue(_CLASS_KEY);
 
     if (className != null) {
       return className;
     }
 
-    final String fileName = RegExp(r'/(.*)\.dart$').firstMatch(filePath).group(1);
+    final String fileName = RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath).group(1);
 
     return fileName.split('_')
         .map((s) => '${s[0].toUpperCase()}${s.substring(1)}')
