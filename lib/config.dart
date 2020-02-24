@@ -50,6 +50,14 @@ class Config {
     return imports?.map((f) => f as String) ?? [];
   }
 
+  bool get isClassConst {
+    if (config.containsKey(ConfigField.CONST)) {
+      return config[ConfigField.CONST];
+    }
+
+    return fields.every((field) => field.isConst);
+  }
+
   String _getConfigValue(key, [String defaultValue]) {
     if (arguments.arguments.contains(key)) {
       return arguments[key];
@@ -78,12 +86,14 @@ class FieldDataProvider {
   String get type => field[ConfigField.TYPE] ?? 'String';
 
   FieldModifier get modifier {
-    if (field[ConfigField.CONST] ?? true) {
+    if (isConst) {
       return FieldModifier.constant;
     }
 
     return FieldModifier.final$;
   }
+
+  bool get isConst => field[ConfigField.CONST] ?? true;
 
   String get _pattern {
     if (field.containsKey(ConfigField.PATTERN)) {
