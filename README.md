@@ -89,3 +89,139 @@ class EnvironmentConfig {
 }
 ```
 
+### Class configuration
+
+Class and file can be configured with next options
+
+- `path` - path to file against `lib` folder, by default it's `environment_config.dart`
+- `class` - class name, by default will be generated based on file name
+- `const` - optional, defines if class constructor should be
+defined as `const`.
+- `imports` - array of imports to add to generated config file
+
+If `class` is not specified value for class name will be generate based on
+file name in `path` field. It will convert `snake_case` into `CamelCase`.
+
+If `const` not provided builder will analyze each field and if all of them
+are `const` - it will add const constructor. Otherwise generated class
+will be without any constructor
+
+#### Example
+
+##### Custom path example
+
+```yaml
+environment_config:
+  path: config/some_config.dart
+  
+  ...
+```
+Will create file with name `some_config.dart` in `lib/config` folder  
+with following class
+
+```dart
+class SomeConfig {
+  ///
+}
+```
+
+##### Custom class name example
+```yaml
+environment_config:
+  path: config/some_other_config_file.dart
+  class: OtherClass
+  
+  ...
+```
+will create file with name `some_other_config_file.dart` in `lib/config`  
+folder with following class
+
+```dart
+class OtherClass {
+  ///
+}
+```
+
+##### Class with const constructor
+
+```yaml
+environment_config:
+  class: OtherClass
+  const: true
+  
+  ...
+```
+will create config with following class
+
+```dart
+class OtherClass {
+  const OtherClass();
+  ///
+}
+```
+
+If `const` is used it will force class to have const constructor or without it.
+Without it, builder will analyze each field, and if **ALL** of them are
+`const`, builder will generate `const` constructor, otherwise - class will
+be generated without any constructor
+
+### Field configuration
+
+To define fields for config definition, provide key set under `fields` key.
+
+Configuration accepts any amount of field keys. At least one field  
+should be specified
+
+**Note:** `config` key can't be used for field definition. It's reserved
+by command itself to define path to custom config yaml file
+
+Each field accepts next params, each param is **optional**
+- `type` - field type, default to `String`
+- `const` - if field should be `const`, default to `TRUE`. If `FALSE`, `final` modifier will be used instead
+- `pattern` - pattern for field value. Inside value for this
+field `__VALUE__` can be used. It will be replaced with actual entered value or with default value
+- `default` - default value for the field. If not specified, field will be treated as required
+- `short_name` - short key name, that can be used during command run
+instead of full field name. Accepts 1 symbol values only
+
+**Note:** If `pattern` key is specified and `const` is `TRUE` ensure your
+pattern also contains `const` modifier like this
+
+```yaml
+environment_config:
+  fields:
+    some_key:
+      pattern: const CustomClass('__VALUE__')
+```
+
+#### Examples
+
+```yaml
+environment_config:
+  fields:
+    numberValue:
+      type: num
+      const: false
+      short_name: o #optional
+    customClassValue:
+      type: CustomClass
+      pattern: const CustomClass('__VALUE__')
+```
+
+This config allows to run next command
+
+```
+flutter pub run environment_config:generate --config=something.yaml -o 345 --customClassValue=something
+```
+
+This command will generate following class
+
+```dart
+class EnvironmentConfig {
+  static final num numberValue = 345;
+
+  static const CustomClass customClassValue = const CustomClass('something');
+}
+
+```
+
