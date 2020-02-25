@@ -1,3 +1,7 @@
+## [1.0.0+2] - Update description
+
+Remove special chars from description
+
 ## [1.0.0+1] - Codestyle updates
 
 Update codestyle according to pub.dev recommendations

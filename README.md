@@ -4,7 +4,7 @@
 
 Environment specific config generator.
 
-Allows to specify env configuration during CI&#x2F;CD build.
+Allows to specify env configuration during CI/CD build.
 
 Primarily created to simplify Flutter build configuration.
 
