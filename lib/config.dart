@@ -18,7 +18,7 @@ class Config {
   }
 
   String get dotEnvFilePath {
-    return 'lib/${_getConfigValue(ConfigFieldType.PATH, '.env')}';
+    return 'lib/${_getConfigValue(ConfigFieldType.DOTENV_PATH, '.env')}';
   }
 
   String get className {
@@ -45,6 +45,10 @@ class Config {
     ));
   }
 
+  Iterable<FieldConfig> get dotEnvFields {
+    return fields.where((field) => field.isDotEnv);
+  }
+
   Iterable<String> get imports {
     if (!config.containsKey(ConfigFieldType.IMPORTS)) {
       return [];
@@ -63,14 +67,14 @@ class Config {
     return fields.every((field) => field.isConst);
   }
 
-  bool get createDotEnv => fields.every((field) => field.isDotEnv);
+  bool get createDotEnv => dotEnvFields.length > 0;
 
   String _getConfigValue(key, [String defaultValue]) {
-    if (arguments.arguments.contains(key)) {
+    if (arguments.arguments.contains(key) && !arguments[key].isEmpty) {
       return arguments[key];
     }
 
-    if (config.containsKey(key)) {
+    if (config.containsKey(key) && !(config[key] ?? '').isEmpty) {
       return config[key];
     }
 

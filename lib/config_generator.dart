@@ -5,17 +5,30 @@ import 'package:dart_style/dart_style.dart';
 
 import 'config.dart';
 
-class ConfigClassGenerator {
+class ConfigGenerator {
   final Config config;
 
-  ConfigClassGenerator(this.config);
+  ConfigGenerator(this.config);
 
-  Future<void> generate() async {
+  Future<void> generate() {
+    List<Future<void>> futures = [
+      _generateClass(),
+    ];
+
+    if (config.createDotEnv) {
+      futures.add(_generateDotEnv());
+    }
+
+    return Future.wait(futures);
+  }
+
+  Future<void> _generateClass() async {
     List<Constructor> constructors = [];
 
     if (config.isClassConst) {
-      constructors.add(Constructor(
-          (ConstructorBuilder builder) => builder..constant = true));
+      constructors.add(Constructor((ConstructorBuilder builder) => builder
+        ..constant = true
+      ));
     }
 
     final Library library =
@@ -39,8 +52,22 @@ class ConfigClassGenerator {
     final classDefinition =
         DartFormatter().format('${library.accept(DartEmitter())}');
 
-    File quotesFile = new File(config.filePath);
+    final File configFile = new File(config.filePath);
 
-    await quotesFile.writeAsString(classDefinition, mode: FileMode.write);
+    await configFile.writeAsString(classDefinition, mode: FileMode.write);
+
+    stdout.writeln('Config generated at "${config.filePath}"');
+  }
+
+  Future<void> _generateDotEnv() async {
+    final File configFile = new File(config.dotEnvFilePath);
+
+    final String envString = config.dotEnvFields
+        .map((field) => '${field.name}=${field.dotEnvValue}')
+        .join("\r\n");
+
+    await configFile.writeAsString(envString, mode: FileMode.write);
+
+    stdout.writeln('.env config generated at "${config.dotEnvFilePath}"');
   }
 }

@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:environment_config/argument_parser.dart';
-
+import 'argument_parser.dart';
 import 'errors/config_error.dart';
 import 'config.dart';
-import 'config_class_generator.dart';
+import 'config_generator.dart';
 import 'config_loader.dart';
 
 void generateConfig(List<String> arguments) async {
@@ -18,8 +17,7 @@ void generateConfig(List<String> arguments) async {
       parser.parseArguments(yamlConfig)
     );
 
-    await ConfigClassGenerator(config).generate();
-    stdout.write('Config generated at "${config.filePath}"');
+    await ConfigGenerator(config).generate();
 
     exitCode = 0;
   } catch(e) {
