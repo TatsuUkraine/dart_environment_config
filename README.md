@@ -11,6 +11,7 @@ Primarily created to simplify Flutter build configuration.
 - flexible configuration for Config class generation
 - allows to specify pattern for field values
 - allows to define required and optional keys for generation
+- allows to export variables to `.env` file
 
 ## Getting Started
 
@@ -18,9 +19,12 @@ Install package as dependency.
 
 Create `environment_config.yaml` or update `package.yaml` file with following code
 
+**Note** This is an example with ALL possible params
+
 ```yaml
 environment_config:
   path: lib/environment_config.dart # optional, result file path
+  dotenv_path: lib/.env # optional, result file path for .env file
   class: EnvironmentConfig # optional, class name
   
   fields: # set of fields for command
@@ -30,6 +34,7 @@ environment_config:
       const: # optional, default to TRUE
       pattern: # optional, specified pattern for key value, use __VALUE__ to insert entered value anywhere in the pattern
       default: # optional, default value for key, if not provided key will be required during command run
+      dontenv: true # optional, if this field should be added to .env file
       
   imports: # optional, array of imports, to include in config file
     - package:some_package
@@ -65,12 +70,17 @@ CI/CD build process to generate config file with values, that specific to
 particular env, without need to specify your Prod credentials  
 anywhere except your build process.
 
+Also reading this values doesn't require async process, that will decrease
+you app start time
+
 Obviously this package doesn't obfuscate or encrypt config values, but
 generated Dart file will be build and obfuscated with rest of  
 your mobile application code. If you want to secure your sensitive
 information you can use encrypted values and **pattern** key to wrap it
-with your decrypt library
+with your decrypt library. But overall keep in mind that there is no way
+to fully [secure your app from reverse engineering](https://rammic.github.io/2015/07/28/hiding-secrets-in-android-apps/)
 
+Also this package allows to generate `.env` file with same key value pairs
 
 ## Config
 
@@ -117,6 +127,7 @@ class EnvironmentConfig {
 Class and file can be configured with next options
 
 - `path` - path to file against `lib` folder, by default it's `environment_config.dart`
+- `dotenv_path` - path to file against `lib` folder, by default it's `.evn`
 - `class` - class name, by default will be generated based on file name
 - `const` - optional, defines if class constructor should be
 defined as `const`.
@@ -128,6 +139,8 @@ file name in `path` field. It will convert `snake_case` into `CamelCase`.
 If `const` not provided builder will analyze each field and if all of them
 are `const` - it will add const constructor. Otherwise generated class
 will be without any constructor
+
+Field `dotenv_path` will be used only if at least one field contains `dotenv: true`
 
 #### Example
 
@@ -206,6 +219,10 @@ field `__VALUE__` can be used. It will be replaced with actual entered value or 
 - `default` - default value for the field. If not specified, field will be treated as required
 - `short_name` - short key name, that can be used during command run
 instead of full field name. Accepts 1 symbol values only
+- `dotenv` - bool flag, if `TRUE` this field will be added to `.env` file.
+
+**If you want to generate `.env` file in addition to class config, at least ONE  
+key should have `dotenv` to be TRUE. Otherwise `.env` file won't be generated**
 
 **Note:** If `pattern` key is specified and `const` is `TRUE` ensure your
 pattern also contains `const` modifier like this
@@ -218,6 +235,8 @@ environment_config:
 ```
 
 #### Examples
+
+##### Pattern example
 
 ```yaml
 environment_config:
@@ -234,10 +253,10 @@ environment_config:
 This config allows to run next command
 
 ```
-flutter pub run environment_config:generate --config=something.yaml -o 345 --customClassValue=something
+flutter pub run environment_config:generate -o 345 --customClassValue=something
 ```
 
-This command will generate following class
+It will generate following class
 
 ```dart
 class EnvironmentConfig {
@@ -248,3 +267,37 @@ class EnvironmentConfig {
 
 ```
 
+##### DotEnv example
+
+To create `.env` at least one key should have `dotenv: true` attribute
+```yaml
+environment_config:
+  fields:
+    first_key:
+      type: num
+    second_key:
+      dotenv: true
+```
+
+This command
+```
+flutter pub run environment_config:generate --first_key=123 --second_key=456
+```
+
+will generate Dart class config
+
+```dart
+class EnvironmentConfig {
+  const EnvironmentConfig();
+
+  static const num first_key = 123;
+
+  static const String second_key = '456';
+}
+```
+
+and following `.env`
+
+```
+second_key=456
+```
