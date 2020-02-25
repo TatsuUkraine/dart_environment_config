@@ -1,4 +1,6 @@
-# environment_config
+# Environment Config Generator
+
+[![pub package](https://img.shields.io/pub/v/environment_config.svg)](https://pub.dartlang.org/packages/environment_config)
 
 Environment specific config generator.
 
