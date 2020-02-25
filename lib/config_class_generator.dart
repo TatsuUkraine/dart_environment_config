@@ -26,7 +26,7 @@ class ConfigClassGenerator {
                 ..constructors.addAll(constructors)
                 ..name = config.className
                 ..fields.addAll(
-                    config.fields.map((FieldDataProvider field) => Field(
+                    config.fields.map((FieldConfig field) => Field(
                           (FieldBuilder builder) => builder
                             ..name = field.name
                             ..static = true

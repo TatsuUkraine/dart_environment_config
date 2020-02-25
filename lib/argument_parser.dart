@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 import 'package:yaml/yaml.dart';
 
-import 'config_field.dart';
+import 'config_field_type.dart';
 import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
 
@@ -13,45 +13,45 @@ class ArgumentParser {
 
   String parseConfigPath() {
     ArgParser parser = new ArgParser()
-      ..addOption(ConfigField.CONFIG);
+      ..addOption(ConfigFieldType.CONFIG);
 
     final ArgResults argResults = parser.parse(
-        arguments.where((arg) => arg.contains('--${ConfigField.CONFIG}='))
+        arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}='))
     );
 
-    if (!argResults.options.contains(ConfigField.CONFIG)) {
+    if (!argResults.options.contains(ConfigFieldType.CONFIG)) {
       return null;
     }
 
-    return argResults[ConfigField.CONFIG];
+    return argResults[ConfigFieldType.CONFIG];
   }
 
   ArgResults parseArguments(YamlMap config) {
     final ArgParser parser = new ArgParser();
 
-    if (!config.containsKey(ConfigField.FIELDS)) {
+    if (!config.containsKey(ConfigFieldType.FIELDS)) {
       throw MalformedConfigError('"fields" key is missing');
     }
 
-    if (config[ConfigField.FIELDS] == null) {
-      throw ValidationError(ConfigField.FIELDS, 'At least one field should be specified');
+    if (config[ConfigFieldType.FIELDS] == null) {
+      throw ValidationError(ConfigFieldType.FIELDS, 'At least one field should be specified');
     }
 
-    final params = config[ConfigField.FIELDS];
+    final params = config[ConfigFieldType.FIELDS];
 
-    parser.addOption(ConfigField.CONFIG);
+    parser.addOption(ConfigFieldType.CONFIG);
 
     params.keys.forEach((key) {
-      if (params[key] is! YamlMap) {
+      if (params[key] != null && params[key] is! Map) {
         throw MalformedConfigError('Mailformed config');
       }
 
-      final YamlMap value = params[key];
+      final Map<dynamic, dynamic> value = params[key] ?? {};
 
       parser.addOption(
         key,
-        abbr: value[ConfigField.SHORT_NAME],
-        defaultsTo: value[ConfigField.DEFAULT],
+        abbr: value[ConfigFieldType.SHORT_NAME],
+        defaultsTo: value[ConfigFieldType.DEFAULT],
       );
     });
 

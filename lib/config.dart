@@ -1,23 +1,28 @@
 import 'package:args/args.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:yaml/yaml.dart';
 
 import 'errors/validation_error.dart';
-import 'config_field.dart';
+import 'config_field_type.dart';
+
+final RegExp _PATTERN_REGEXP = RegExp(r'__VALUE__');
 
 class Config {
 
   final ArgResults arguments;
-  final YamlMap config;
+  final Map<dynamic, dynamic> config;
 
   Config(this.config, this.arguments);
 
   String get filePath {
-    return 'lib/${_getConfigValue(ConfigField.PATH, 'environment_config.dart')}';
+    return 'lib/${_getConfigValue(ConfigFieldType.PATH, 'environment_config.dart')}';
+  }
+
+  String get dotEnvFilePath {
+    return 'lib/${_getConfigValue(ConfigFieldType.PATH, '.env')}';
   }
 
   String get className {
-    String className = _getConfigValue(ConfigField.CLASS);
+    String className = _getConfigValue(ConfigFieldType.CLASS);
 
     if (className != null) {
       return className;
@@ -30,33 +35,35 @@ class Config {
         .join('');
   }
 
-  Iterable<FieldDataProvider> get fields {
-    final YamlMap fields = config[ConfigField.FIELDS];
+  Iterable<FieldConfig> get fields {
+    final Map<dynamic, dynamic> fields = config[ConfigFieldType.FIELDS];
 
-    return fields.keys.map((key) => FieldDataProvider(
+    return fields.keys.map((key) => FieldConfig(
       key,
-      config[ConfigField.FIELDS][key],
+      config[ConfigFieldType.FIELDS][key] ?? {},
       arguments[key]
     ));
   }
 
   Iterable<String> get imports {
-    if (!config.containsKey(ConfigField.IMPORTS)) {
+    if (!config.containsKey(ConfigFieldType.IMPORTS)) {
       return [];
     }
 
-    final YamlList imports = config[ConfigField.IMPORTS];
+    final List<dynamic> imports = config[ConfigFieldType.IMPORTS];
 
     return imports?.map((f) => f as String) ?? [];
   }
 
   bool get isClassConst {
-    if (config.containsKey(ConfigField.CONST)) {
-      return config[ConfigField.CONST];
+    if (config.containsKey(ConfigFieldType.CONST)) {
+      return config[ConfigFieldType.CONST];
     }
 
     return fields.every((field) => field.isConst);
   }
+
+  bool get createDotEnv => fields.every((field) => field.isDotEnv);
 
   String _getConfigValue(key, [String defaultValue]) {
     if (arguments.arguments.contains(key)) {
@@ -71,19 +78,19 @@ class Config {
   }
 }
 
-class FieldDataProvider {
+class FieldConfig {
 
   final String name;
-  final YamlMap field;
+  final Map<dynamic, dynamic> field;
   final String _value;
 
-  FieldDataProvider(this.name, this.field, [String value]): _value = value {
-    if ((_value ?? field[ConfigField.DEFAULT] ?? '').isEmpty) {
+  FieldConfig(this.name, this.field, [String value]): _value = value {
+    if ((_value ?? field[ConfigFieldType.DEFAULT] ?? '').isEmpty) {
       throw ValidationError(name, '"$name" is required');
     }
   }
 
-  String get type => field[ConfigField.TYPE] ?? 'String';
+  String get type => field[ConfigFieldType.TYPE] ?? 'String';
 
   FieldModifier get modifier {
     if (isConst) {
@@ -93,27 +100,28 @@ class FieldDataProvider {
     return FieldModifier.final$;
   }
 
-  bool get isConst => field[ConfigField.CONST] ?? true;
-
-  String get _pattern {
-    if (field.containsKey(ConfigField.PATTERN)) {
-      return field[ConfigField.PATTERN];
-    }
-
-    if (type != 'String') {
-      return null;
-    }
-
-    return '\'__VALUE__\'';
-  }
+  bool get isConst => field[ConfigFieldType.CONST] ?? true;
+  bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
 
   String get value {
-    String value = _value ?? field[ConfigField.DEFAULT];
+    String pattern = _pattern;
 
-    if (_pattern == null) {
-      return value;
+    if (_pattern == null && type == 'String') {
+      pattern = '\'__VALUE__\'';
     }
 
-    return _pattern.replaceAll(new RegExp(r'__VALUE__'), value);
+    if (pattern == null) {
+      return _fieldValue;
+    }
+
+    return pattern.replaceAll(_PATTERN_REGEXP, _fieldValue);
   }
+
+  String get dotEnvValue {
+    return _pattern?.replaceAll(_PATTERN_REGEXP, _fieldValue) ?? _fieldValue;
+  }
+
+  String get _pattern => field[ConfigFieldType.PATTERN];
+
+  String get _fieldValue => _value ?? field[ConfigFieldType.DEFAULT];
 }
