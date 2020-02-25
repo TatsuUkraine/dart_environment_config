@@ -6,14 +6,14 @@ Allows to specify env configuration during CI&#x2F;CD build.
 
 Primarily created to simplify Flutter build configuration.
 
-## Features
+# Features
 
 - flexible configuration for Config class generation
 - allows to specify pattern for field values
 - allows to define required and optional keys for generation
 - allows to export variables to `.env` file
 
-## Getting Started
+# Getting Started
 
 Install package as dependency.
 
@@ -60,7 +60,7 @@ Import this file into your application and use it.
 
 **Note:** It's recommended to add generated config file to `.gitignore`
 
-## Why this package is needed?
+# Why this package is needed?
 
 This package allows to integrate config generation based on environment
 in an easy way.
@@ -82,9 +82,9 @@ to fully [secure your app from reverse engineering](https://rammic.github.io/201
 
 Also this package allows to generate `.env` file with same key value pairs
 
-## Config
+# Config
 
-### Command options
+## Command options
 
 During command run YAML file will be parsed to define keys for command.
 
@@ -122,7 +122,7 @@ class EnvironmentConfig {
 }
 ```
 
-### Class configuration
+## Class configuration
 
 Class and file can be configured with next options
 
@@ -142,9 +142,9 @@ will be without any constructor
 
 Field `dotenv_path` will be used only if at least one field contains `dotenv: true`
 
-#### Config Examples
+### Config Examples
 
-##### Custom path example
+#### Custom path example
 
 ```yaml
 environment_config:
@@ -161,7 +161,7 @@ class SomeConfig {
 }
 ```
 
-##### Custom class name example
+#### Custom class name example
 ```yaml
 environment_config:
   path: config/some_other_config_file.dart
@@ -178,7 +178,7 @@ class OtherClass {
 }
 ```
 
-##### Class with const constructor
+#### Class with const constructor
 
 ```yaml
 environment_config:
@@ -201,7 +201,7 @@ Without it, builder will analyze each field, and if **ALL** of them are
 `const`, builder will generate `const` constructor, otherwise - class will
 be generated without any constructor
 
-### Field configuration
+## Field configuration
 
 To define fields for config definition, provide key set under `fields` key.
 
@@ -234,9 +234,9 @@ environment_config:
       pattern: const CustomClass('__VALUE__')
 ```
 
-#### Fields config examples
+### Fields config examples
 
-##### Pattern example
+#### Pattern example
 
 ```yaml
 environment_config:
@@ -267,7 +267,7 @@ class EnvironmentConfig {
 
 ```
 
-##### DotEnv example
+#### DotEnv example
 
 To create `.env` at least one key should have `dotenv: true` attribute
 ```yaml
