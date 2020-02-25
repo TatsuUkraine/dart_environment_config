@@ -11,7 +11,7 @@ class ArgumentParser {
   ArgumentParser(this.arguments);
 
   String parseConfigPath() {
-    ArgParser parser = new ArgParser()..addOption(ConfigFieldType.CONFIG);
+    ArgParser parser = ArgParser()..addOption(ConfigFieldType.CONFIG);
 
     final ArgResults argResults = parser.parse(
         arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}=')));
@@ -24,7 +24,7 @@ class ArgumentParser {
   }
 
   ArgResults parseArguments(YamlMap config) {
-    final ArgParser parser = new ArgParser();
+    final ArgParser parser = ArgParser();
 
     if (!config.containsKey(ConfigFieldType.FIELDS)) {
       throw MalformedConfigError('"fields" key is missing');

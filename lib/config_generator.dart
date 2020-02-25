@@ -50,7 +50,7 @@ class ConfigGenerator {
     final classDefinition =
         DartFormatter().format('${library.accept(DartEmitter())}');
 
-    final File configFile = new File(config.filePath);
+    final File configFile = File(config.filePath);
 
     await configFile.writeAsString(classDefinition, mode: FileMode.write);
 
@@ -58,7 +58,7 @@ class ConfigGenerator {
   }
 
   Future<void> _generateDotEnv() async {
-    final File configFile = new File(config.dotEnvFilePath);
+    final File configFile = File(config.dotEnvFilePath);
 
     final String envString = config.dotEnvFields
         .map((field) => '${field.name}=${field.dotEnvValue}')
