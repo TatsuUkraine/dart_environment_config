@@ -71,6 +71,7 @@ your mobile application code. If you want to secure your sensitive
 information you can use encrypted values and **pattern** key to wrap it
 with your decrypt library
 
+
 ## Config
 
 ### Command options
