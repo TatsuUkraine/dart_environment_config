@@ -5,11 +5,15 @@ import 'config_field_type.dart';
 import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
 
+/// Command argument parser
 class ArgumentParser {
+  /// Arguments from command params
   final List<String> arguments;
 
   ArgumentParser(this.arguments);
 
+  /// Defines if `config` key was specified
+  /// during command run
   String parseConfigPath() {
     ArgParser parser = ArgParser()..addOption(ConfigFieldType.CONFIG);
 
@@ -23,6 +27,7 @@ class ArgumentParser {
     return argResults[ConfigFieldType.CONFIG];
   }
 
+  /// Provides arguments from command based on YAML fields config
   ArgResults parseArguments(YamlMap config) {
     final ArgParser parser = ArgParser();
 

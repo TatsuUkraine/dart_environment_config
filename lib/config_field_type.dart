@@ -1,3 +1,4 @@
+/// Set of fields used in YAML document
 class ConfigFieldType {
   static const String CONFIG = 'config';
   static const String FIELDS = 'fields';

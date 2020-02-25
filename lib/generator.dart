@@ -6,6 +6,7 @@ import 'config.dart';
 import 'config_generator.dart';
 import 'config_loader.dart';
 
+/// Entry point of command run
 void generateConfig(List<String> arguments) async {
   final parser = ArgumentParser(arguments);
 

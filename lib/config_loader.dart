@@ -11,6 +11,17 @@ const List<String> _CONFIG_FILES = const [
 
 const String _CONFIG_KEY = 'environment_config';
 
+/// Loads config YAML file
+///
+/// If `config` key provided will try to find file based on this path
+///
+/// If it's not provided or not found will try to find config in following files
+///
+/// - <custom_path>
+/// - environment_config.yaml
+/// - pubspec.yaml
+///
+/// If no config file found will throw exception
 Future<YamlMap> loadConfig(String path) async {
   List<String> files = [..._CONFIG_FILES];
 
