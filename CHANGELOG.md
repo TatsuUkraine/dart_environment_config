@@ -1,3 +1,7 @@
+## [1.0.1] - Exception handling
+
+Changed code execution to Future chain
+
 ## [1.0.0+3] - DartDoc added
 
 Added dart docs to package classes

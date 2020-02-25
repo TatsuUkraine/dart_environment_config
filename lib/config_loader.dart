@@ -4,7 +4,7 @@ import 'package:yaml/yaml.dart';
 
 import 'errors/file_not_found_error.dart';
 
-const List<String> _CONFIG_FILES = const [
+const List<String> _CONFIG_FILES = [
   'environment_config.yaml',
   'pubspec.yaml',
 ];

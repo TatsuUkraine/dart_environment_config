@@ -82,7 +82,7 @@ class Config {
   }
 
   /// Defines if generator should try to create `.env` file
-  bool get createDotEnv => dotEnvFields.length > 0;
+  bool get createDotEnv => dotEnvFields.isNotEmpty;
 
   String _getConfigValue(key, [String defaultValue]) {
     if (arguments.arguments.contains(key) && !arguments[key].isEmpty) {
