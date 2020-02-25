@@ -1,3 +1,7 @@
+## [1.0.0+3] - DartDoc added
+
+Added dart docs to package classes
+
 ## [1.0.0+2] - Update description
 
 Remove special chars from description
