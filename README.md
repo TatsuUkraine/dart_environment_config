@@ -321,3 +321,15 @@ into your native layer like your plugins or Android/iOS app configuration.
 
 For more info see this docs for [Android](https://github.com/ByneappLLC/flutter_config/blob/master/doc/ANDROID.md)
 or [iOS](https://github.com/ByneappLLC/flutter_config/blob/master/doc/IOS.md)
+
+## Changelog
+
+Please see the [Changelog](https://github.com/TatsuUkraine/dart_environment_config/blob/master/CHANGELOG.md)
+page to know what's recently changed.
+
+## Bugs/Requests
+
+If you encounter any problems feel free to open an [issue](https://github.com/TatsuUkraine/dart_environment_config/issues).
+If you feel the library is missing a feature,
+please raise a ticket on Github and I'll look into it.
+Pull request are also welcome.
