@@ -6,14 +6,14 @@ Allows to specify env configuration during CI&#x2F;CD build.
 
 Primarily created to simplify Flutter build configuration.
 
-# Features
+## Features
 
 - flexible configuration for Config class generation
 - allows to specify pattern for field values
 - allows to define required and optional keys for generation
 - allows to export variables to `.env` file
 
-# Getting Started
+## Getting Started
 
 Install package as dependency.
 
@@ -60,7 +60,7 @@ Import this file into your application and use it.
 
 **Note:** It's recommended to add generated config files to `.gitignore`
 
-# Why this package is needed?
+## Why this package is needed?
 
 This package allows to integrate config generation based on environment
 in an easy way.
@@ -82,7 +82,7 @@ to fully [secure your app from reverse engineering](https://rammic.github.io/201
 
 Also this package allows to generate `.env` file with same key value pairs
 
-# Config
+## Config
 
 ## Command options
 
