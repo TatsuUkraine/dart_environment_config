@@ -12,15 +12,12 @@ void generateConfig(List<String> arguments) async {
   try {
     final yamlConfig = await loadConfig(parser.parseConfigPath());
 
-    final config = Config(
-      yamlConfig,
-      parser.parseArguments(yamlConfig)
-    );
+    final config = Config(yamlConfig, parser.parseArguments(yamlConfig));
 
     await ConfigGenerator(config).generate();
 
     exitCode = 0;
-  } catch(e) {
+  } catch (e) {
     exitCode = 2;
 
     if (e is! ConfigError) {

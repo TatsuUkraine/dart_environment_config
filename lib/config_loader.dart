@@ -26,7 +26,7 @@ Future<YamlMap> loadConfig(String path) async {
 
     try {
       yamlString = await File(file).readAsString();
-    } catch(e) {
+    } catch (e) {
       continue;
     }
 

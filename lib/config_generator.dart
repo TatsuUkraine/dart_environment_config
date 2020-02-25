@@ -26,9 +26,8 @@ class ConfigGenerator {
     List<Constructor> constructors = [];
 
     if (config.isClassConst) {
-      constructors.add(Constructor((ConstructorBuilder builder) => builder
-        ..constant = true
-      ));
+      constructors.add(Constructor(
+          (ConstructorBuilder builder) => builder..constant = true));
     }
 
     final Library library =
@@ -38,15 +37,14 @@ class ConfigGenerator {
               Class((ClassBuilder builder) => builder
                 ..constructors.addAll(constructors)
                 ..name = config.className
-                ..fields.addAll(
-                    config.fields.map((FieldConfig field) => Field(
-                          (FieldBuilder builder) => builder
-                            ..name = field.name
-                            ..static = true
-                            ..modifier = field.modifier
-                            ..type = Reference(field.type)
-                            ..assignment = Code(field.value),
-                        )))),
+                ..fields.addAll(config.fields.map((FieldConfig field) => Field(
+                      (FieldBuilder builder) => builder
+                        ..name = field.name
+                        ..static = true
+                        ..modifier = field.modifier
+                        ..type = Reference(field.type)
+                        ..assignment = Code(field.value),
+                    )))),
             ]));
 
     final classDefinition =

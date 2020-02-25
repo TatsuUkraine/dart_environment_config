@@ -1,3 +1,1 @@
-class ConfigError extends Error {
-
-}
+class ConfigError extends Error {}

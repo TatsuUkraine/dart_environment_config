@@ -7,7 +7,6 @@ import 'config_field_type.dart';
 final RegExp _PATTERN_REGEXP = RegExp(r'__VALUE__');
 
 class Config {
-
   final ArgResults arguments;
   final Map<dynamic, dynamic> config;
 
@@ -28,9 +27,11 @@ class Config {
       return className;
     }
 
-    final String fileName = RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath).group(1);
+    final String fileName =
+        RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath).group(1);
 
-    return fileName.split('_')
+    return fileName
+        .split('_')
         .map((s) => '${s[0].toUpperCase()}${s.substring(1)}')
         .join('');
   }
@@ -39,10 +40,7 @@ class Config {
     final Map<dynamic, dynamic> fields = config[ConfigFieldType.FIELDS];
 
     return fields.keys.map((key) => FieldConfig(
-      key,
-      config[ConfigFieldType.FIELDS][key] ?? {},
-      arguments[key]
-    ));
+        key, config[ConfigFieldType.FIELDS][key] ?? {}, arguments[key]));
   }
 
   Iterable<FieldConfig> get dotEnvFields {
@@ -83,12 +81,11 @@ class Config {
 }
 
 class FieldConfig {
-
   final String name;
   final Map<dynamic, dynamic> field;
   final String _value;
 
-  FieldConfig(this.name, this.field, [String value]): _value = value {
+  FieldConfig(this.name, this.field, [String value]) : _value = value {
     if ((_value ?? field[ConfigFieldType.DEFAULT] ?? '').isEmpty) {
       throw ValidationError(name, '"$name" is required');
     }
@@ -105,6 +102,7 @@ class FieldConfig {
   }
 
   bool get isConst => field[ConfigFieldType.CONST] ?? true;
+
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
 
   String get value {

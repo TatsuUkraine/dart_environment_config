@@ -6,18 +6,15 @@ import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
 
 class ArgumentParser {
-
   final List<String> arguments;
 
   ArgumentParser(this.arguments);
 
   String parseConfigPath() {
-    ArgParser parser = new ArgParser()
-      ..addOption(ConfigFieldType.CONFIG);
+    ArgParser parser = new ArgParser()..addOption(ConfigFieldType.CONFIG);
 
     final ArgResults argResults = parser.parse(
-        arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}='))
-    );
+        arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}=')));
 
     if (!argResults.options.contains(ConfigFieldType.CONFIG)) {
       return null;
@@ -34,7 +31,8 @@ class ArgumentParser {
     }
 
     if (config[ConfigFieldType.FIELDS] == null) {
-      throw ValidationError(ConfigFieldType.FIELDS, 'At least one field should be specified');
+      throw ValidationError(
+          ConfigFieldType.FIELDS, 'At least one field should be specified');
     }
 
     final params = config[ConfigFieldType.FIELDS];
