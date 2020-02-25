@@ -307,6 +307,10 @@ second_key=456
 To add config generation into any CI/CD, add command execution after
 deps are installed and before build run.
 
+```
+flutter pub run environment_config:generate --<key_name>=<key_value>
+```
+
 ## Integration with other packages
 
 **Note** Next package was selected just for an example. You can choose any other package
