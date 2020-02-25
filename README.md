@@ -316,7 +316,7 @@ Support of `.env` generation was primarily added to generate config for
 packages that relies on it.
 
 For example `.env` generation feature can be used with [flutter_config](https://pub.dev/packages/flutter_config)
-package. This particular package allows you to pass environment variables
+package. This particular package allows you to pass environment variables from `.env`
 into your native layer like your plugins or Android/iOS app configuration.
 
 For more info see this docs for [Android](https://github.com/ByneappLLC/flutter_config/blob/master/doc/ANDROID.md)
