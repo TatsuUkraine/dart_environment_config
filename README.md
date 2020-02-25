@@ -65,16 +65,16 @@ Import this file into your application and use it.
 This package allows to integrate config generation based on environment
 in an easy way.
 
-Unlike most env specific configurations this package can be added to  
-CI/CD build process to generate config file with values, that specific to  
-particular env, without need to specify your Prod credentials  
+Unlike most env specific configurations this package can be added to
+CI/CD build process to generate config file with values, that specific to
+particular env, without need to specify your Prod credentials
 anywhere except your build process.
 
 Also reading this values doesn't require async process, that will decrease
 you app start time
 
 Obviously this package doesn't obfuscate or encrypt config values, but
-generated Dart file will be build and obfuscated with rest of  
+generated Dart file will be build and obfuscated with rest of
 your mobile application code. If you want to secure your sensitive
 information you can use encrypted values and **pattern** key to wrap it
 with your decrypt library. But overall keep in mind that there is no way
@@ -127,7 +127,7 @@ class EnvironmentConfig {
 Class and file can be configured with next options
 
 - `path` - path to file against `lib` folder, by default it's `environment_config.dart`
-- `dotenv_path` - path to file against `lib` folder, by default it's `.evn`
+- `dotenv_path` - path to file against `lib` folder, by default it's `.env`
 - `class` - class name, by default will be generated based on file name
 - `const` - optional, defines if class constructor should be
 defined as `const`.
@@ -142,7 +142,7 @@ will be without any constructor
 
 Field `dotenv_path` will be used only if at least one field contains `dotenv: true`
 
-#### Example
+#### Config Examples
 
 ##### Custom path example
 
@@ -152,7 +152,7 @@ environment_config:
   
   ...
 ```
-Will create file with name `some_config.dart` in `lib/config` folder  
+Will create file with name `some_config.dart` in `lib/config` folder
 with following class
 
 ```dart
@@ -169,7 +169,7 @@ environment_config:
   
   ...
 ```
-will create file with name `some_other_config_file.dart` in `lib/config`  
+will create file with name `some_other_config_file.dart` in `lib/config`
 folder with following class
 
 ```dart
@@ -205,7 +205,7 @@ be generated without any constructor
 
 To define fields for config definition, provide key set under `fields` key.
 
-Configuration accepts any amount of field keys. At least one field  
+Configuration accepts any amount of field keys. At least one field
 should be specified
 
 **Note:** `config` key can't be used for field definition. It's reserved
@@ -221,7 +221,7 @@ field `__VALUE__` can be used. It will be replaced with actual entered value or 
 instead of full field name. Accepts 1 symbol values only
 - `dotenv` - bool flag, if `TRUE` this field will be added to `.env` file.
 
-**If you want to generate `.env` file in addition to class config, at least ONE  
+**If you want to generate `.env` file in addition to class config, at least ONE
 key should have `dotenv` to be TRUE. Otherwise `.env` file won't be generated**
 
 **Note:** If `pattern` key is specified and `const` is `TRUE` ensure your
@@ -234,7 +234,7 @@ environment_config:
       pattern: const CustomClass('__VALUE__')
 ```
 
-#### Examples
+#### Fields config examples
 
 ##### Pattern example
 
