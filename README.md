@@ -58,7 +58,7 @@ class, fields and name specified in yaml config.
 
 Import this file into your application and use it.
 
-**Note:** It's recommended to add generated config file to `.gitignore`
+**Note:** It's recommended to add generated config files to `.gitignore`
 
 # Why this package is needed?
 
@@ -301,3 +301,23 @@ and following `.env`
 ```
 second_key=456
 ```
+
+## Integration with CI/CD
+
+To add config generation into any CI/CD, add command execution after
+deps are installed and before build run.
+
+## Integration with other packages
+
+**Note** Next package was selected just for an example. You can choose any other package
+that works with `.env` file
+
+Support of `.env` generation was primarily added to generate config for
+packages that relies on it.
+
+For example `.env` generation feature can be used with [flutter_config](https://pub.dev/packages/flutter_config)
+package. This particular package allows you to pass environment variables
+into your native layer like your plugins or Android/iOS app configuration.
+
+For more info see this docs for [Android](https://github.com/ByneappLLC/flutter_config/blob/master/doc/ANDROID.md)
+or [iOS](https://github.com/ByneappLLC/flutter_config/blob/master/doc/IOS.md)
