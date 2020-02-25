@@ -69,9 +69,9 @@ class Config {
 
   /// If class should contain `const` constructor
   ///
-  /// In can be forsed to be true with yaml config
+  /// In can be forced to be true with yaml config
   ///
-  /// If config key not specified, class will ahve const constructor
+  /// If config key not specified, class will have const constructor
   /// if all fields are `const`
   bool get isClassConst {
     if (config.containsKey(ConfigFieldType.CONST)) {
