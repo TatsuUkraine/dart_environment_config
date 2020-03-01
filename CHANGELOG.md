@@ -1,3 +1,7 @@
+## [1.1.0] - 01.03.2020
+
+Added support of global env variables during build
+
 ## [1.0.1] - Exception handling
 
 Changed code execution to Future chain
