@@ -19,4 +19,3 @@ dependencies:
 environment_config:
   fields:
     env:
-      global: SOME_VAR
