@@ -11,6 +11,7 @@ final RegExp _PATTERN_REGEXP = RegExp(r'__VALUE__');
 class Config {
   /// Arguments from command
   final ArgResults arguments;
+
   /// Config object from yaml file
   final Map<dynamic, dynamic> config;
 
@@ -48,7 +49,10 @@ class Config {
     final Map<dynamic, dynamic> fields = config[ConfigFieldType.FIELDS];
 
     return fields.keys.map((key) => FieldConfig(
-        key, config[ConfigFieldType.FIELDS][key] ?? {}, arguments[key]));
+      key,
+      config[ConfigFieldType.FIELDS][key] ?? {},
+      arguments[key]
+    ));
   }
 
   /// Fields, that should be exported to `.env` file
@@ -100,13 +104,15 @@ class Config {
 class FieldConfig {
   /// Field name
   final String name;
+
   /// Field configuration from YAML file
   final Map<dynamic, dynamic> field;
+
   /// Value provided from command params
   final String _value;
 
   FieldConfig(this.name, this.field, [String value]) : _value = value {
-    if ((_value ?? field[ConfigFieldType.DEFAULT] ?? '').isEmpty) {
+    if ((_value ?? field[ConfigFieldType.DEFAULT]) == null) {
       throw ValidationError(name, '"$name" is required');
     }
   }

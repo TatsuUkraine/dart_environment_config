@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:yaml/yaml.dart';
 
+import 'platform_value_provider.dart';
 import 'config_field_type.dart';
 import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
@@ -10,7 +11,9 @@ class ArgumentParser {
   /// Arguments from command params
   final List<String> arguments;
 
-  ArgumentParser(this.arguments);
+  final PlatformValueProvider valueProvider;
+
+  ArgumentParser(this.arguments, this.valueProvider);
 
   /// Defines if `config` key was specified
   /// during command run
@@ -51,10 +54,17 @@ class ArgumentParser {
 
       final Map<dynamic, dynamic> value = params[key] ?? {};
 
+      final String globalKey = value[ConfigFieldType.ENV_VAR];
+      String defaultValue;
+
+      if ((globalKey ?? '').isNotEmpty) {
+        defaultValue = valueProvider.getValue(globalKey);
+      }
+
       parser.addOption(
         key,
         abbr: value[ConfigFieldType.SHORT_NAME],
-        defaultsTo: value[ConfigFieldType.DEFAULT],
+        defaultsTo: defaultValue,
       );
     });
 

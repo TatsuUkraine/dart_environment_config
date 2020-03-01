@@ -1,3 +1,9 @@
+## [1.1.0] - 02.03.2020
+
+- Added support of global env variables during build
+- Added ability to make field optional with empty string on `default`
+  key
+
 ## [1.0.1] - Exception handling
 
 Changed code execution to Future chain
