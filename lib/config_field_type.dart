@@ -13,4 +13,5 @@ class ConfigFieldType {
   static const String CONST = 'const';
   static const String SHORT_NAME = 'short_name';
   static const String IS_DOTENV = 'dotenv';
+  static const String GLOBAL = 'global';
 }
