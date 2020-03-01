@@ -37,6 +37,7 @@ environment_config:
       pattern: # optional, specified pattern for key value, use __VALUE__ to insert entered value anywhere in the pattern
       default: # optional, default value for key, if not provided key will be required during command run
       dontenv: true # optional, if this field should be added to .env file
+      env_var: # optional, global environment variable name
       
   imports: # optional, array of imports, to include in config file
     - package:some_package
@@ -93,7 +94,7 @@ During command run YAML file will be parsed to define keys for command.
 - `config` - path to yaml file with package configuration
 - any key name, that specified in yaml file under `fields` key
 
-For example. If you will have next yaml config
+For example. If you have next yaml config
 
 ```yaml
 environment_config:
@@ -222,9 +223,16 @@ field `__VALUE__` can be used. It will be replaced with actual entered value or 
 - `short_name` - short key name, that can be used during command run
 instead of full field name. Accepts 1 symbol values only
 - `dotenv` - bool flag, if `TRUE` this field will be added to `.env` file.
+- `env_var` - environment global variable name
 
 **If you want to generate `.env` file in addition to class config, at least ONE
 key should have `dotenv` to be TRUE. Otherwise `.env` file won't be generated**
+
+**Note** If field config doesn't have `default` key specified it will be
+treated as **required**. Which means that you need provide value for
+your field in one of the following way:
+- argument during command run
+- global env variable, if `env_var` is specified
 
 **Note:** If `pattern` key is specified and `const` is `TRUE` ensure your
 pattern also contains `const` modifier like this
@@ -304,6 +312,26 @@ and following `.env`
 second_key=456
 ```
 
+#### Global environment variable example
+
+If you want to use value from environment variable, just define key
+`env_var`.
+
+```yaml
+environment_config:
+  fields:
+    first_key:
+      env_var: PATH
+```
+
+In that way generator will try to get value from `PATH` global variable
+for your key.
+
+Generator will use next priority:
+- value from command arguments
+- value from environment variable `PATH`
+- value from `default` key (if it was specified)
+
 ## Integration with CI/CD
 
 To add config generation into any CI/CD, add command execution after
@@ -311,6 +339,17 @@ deps are installed and before build run.
 
 ```
 flutter pub run environment_config:generate --<key_name>=<key_value>
+```
+
+If your build tool allows to specify environment variables (for example
+like Code Magic does), you can specify all needed key/values there. And
+in YAML config just define `env_var` in keys, where you want to use them
+with same variable name like in your build tool. If all keys has
+`env_var` specified and your build tool also provides all needed values,
+you can run generator just like this.
+
+```
+flutter pub run environment_config:generate
 ```
 
 ## Integration with other packages

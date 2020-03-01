@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'platform_value_provider.dart';
 import 'argument_parser.dart';
 import 'config.dart';
 import 'config_generator.dart';
@@ -7,10 +8,13 @@ import 'config_loader.dart';
 
 /// Entry point of command run
 Future<void> generateConfig(List<String> arguments) {
-  final parser = ArgumentParser(arguments);
+  final parser = ArgumentParser(arguments, PlatformValueProvider());
 
   return loadConfig(parser.parseConfigPath()).then((yamlConfig) {
-    return Config(yamlConfig, parser.parseArguments(yamlConfig));
+    return Config(
+      yamlConfig,
+      parser.parseArguments(yamlConfig),
+    );
   }).then((config) {
     return ConfigGenerator(config).generate();
   }).then((_) {
