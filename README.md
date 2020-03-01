@@ -325,7 +325,7 @@ environment_config:
 ```
 
 In that way generator will try to get value from `PATH` global variable
-from your key.
+for your key.
 
 Generator will use next priority:
 - value from command arguments
