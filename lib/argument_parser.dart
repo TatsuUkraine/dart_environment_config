@@ -54,7 +54,7 @@ class ArgumentParser {
 
       final Map<dynamic, dynamic> value = params[key] ?? {};
 
-      final String globalKey = value[ConfigFieldType.GLOBAL];
+      final String globalKey = value[ConfigFieldType.ENV_VAR];
       String defaultValue;
 
       if ((globalKey ?? '').isNotEmpty) {
