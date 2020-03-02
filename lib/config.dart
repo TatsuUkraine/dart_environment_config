@@ -24,7 +24,7 @@ class Config {
 
   /// Target file for `.env` params
   String get dotEnvFilePath {
-    return 'lib/${_getConfigValue(ConfigFieldType.DOTENV_PATH, '.env')}';
+    return _getConfigValue(ConfigFieldType.DOTENV_PATH, '.env');
   }
 
   /// Provides config class name

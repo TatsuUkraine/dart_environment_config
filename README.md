@@ -15,6 +15,15 @@ Primarily created to simplify Flutter build configuration.
 - allows to define required and optional keys for generation
 - allows to export variables to `.env` file
 
+## Migration from 1.x.x to 2.x.x
+
+In `1.x.x` path for `.env` was generated against `lib/` folder. Starting
+from `2.x.x` path for `.env` file is generated against your root app
+folder.
+
+So by default `.env` file will be generated alongside with
+`pubspec.yaml` and other root files.
+
 ## Getting Started
 
 Install package as dependency.
@@ -26,7 +35,7 @@ Create `environment_config.yaml` or update `package.yaml` file with following co
 ```yaml
 environment_config:
   path: environment_config.dart # optional, result file path against `lib/` folder
-  dotenv_path: .env # optional, result file path for .env file against `lib/` folder
+  dotenv_path: .env # optional, result file path for .env file against project root folder
   class: EnvironmentConfig # optional, class name
   
   fields: # set of fields for command
@@ -130,7 +139,8 @@ class EnvironmentConfig {
 Class and file can be configured with next options
 
 - `path` - path to file against `lib` folder, by default it's `environment_config.dart`
-- `dotenv_path` - path to file against `lib` folder, by default it's `.env`
+- `dotenv_path` - path to file against root app folder, by default it's
+  `.env`
 - `class` - class name, by default will be generated based on file name
 - `const` - optional, defines if class constructor should be
 defined as `const`.
@@ -294,7 +304,7 @@ This command
 flutter pub run environment_config:generate --first_key=123 --second_key=456
 ```
 
-will generate Dart class config
+will generate Dart class config in `lib/` folder
 
 ```dart
 class EnvironmentConfig {
@@ -306,7 +316,7 @@ class EnvironmentConfig {
 }
 ```
 
-and following `.env`
+and following `.env` in your root app folder
 
 ```
 second_key=456

@@ -1,6 +1,7 @@
-## [1.1.1] - 02.03.2020
+## [2.0.0] - 02.03.2020
 
 - Fixed examples in README
+- Changed default path for `.env` file
 
 ## [1.1.0] - 02.03.2020
 
