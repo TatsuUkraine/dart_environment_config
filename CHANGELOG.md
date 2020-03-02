@@ -1,3 +1,7 @@
+## [1.1.1] - 02.03.2020
+
+- Fixed examples in README
+
 ## [1.1.0] - 02.03.2020
 
 - Added support of global env variables during build

@@ -25,8 +25,8 @@ Create `environment_config.yaml` or update `package.yaml` file with following co
 
 ```yaml
 environment_config:
-  path: lib/environment_config.dart # optional, result file path
-  dotenv_path: lib/.env # optional, result file path for .env file
+  path: environment_config.dart # optional, result file path against `lib/` folder
+  dotenv_path: .env # optional, result file path for .env file against `lib/` folder
   class: EnvironmentConfig # optional, class name
   
   fields: # set of fields for command
@@ -36,7 +36,7 @@ environment_config:
       const: # optional, default to TRUE
       pattern: # optional, specified pattern for key value, use __VALUE__ to insert entered value anywhere in the pattern
       default: # optional, default value for key, if not provided key will be required during command run
-      dontenv: true # optional, if this field should be added to .env file
+      dotenv: true # optional, if this field should be added to .env file
       env_var: # optional, global environment variable name
       
   imports: # optional, array of imports, to include in config file
