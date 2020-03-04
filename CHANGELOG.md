@@ -1,3 +1,9 @@
+## [2.1.0] - 04.03.2020
+
+**Features**
+
+- added ability to exclude field from Dart config class
+
 ## [2.0.0] - 02.03.2020
 
 - Fixed examples in README
