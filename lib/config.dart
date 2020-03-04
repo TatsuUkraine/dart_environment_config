@@ -60,6 +60,11 @@ class Config {
     return fields.where((field) => field.isDotEnv);
   }
 
+  /// Fields, that should be exported to Dart config file
+  Iterable<FieldConfig> get classConfigFields {
+    return fields.where((field) => field.isConfigField);
+  }
+
   /// Collection if imports, that should be added to config class
   Iterable<String> get imports {
     if (!config.containsKey(ConfigFieldType.IMPORTS)) {
@@ -87,6 +92,9 @@ class Config {
 
   /// Defines if generator should try to create `.env` file
   bool get createDotEnv => dotEnvFields.isNotEmpty;
+  
+  /// Defines if generator should try to create Dart config file
+  bool get createConfigClass => classConfigFields.isNotEmpty;
 
   String _getConfigValue(key, [String defaultValue]) {
     if (arguments.arguments.contains(key) && !arguments[key].isEmpty) {
@@ -140,6 +148,9 @@ class FieldConfig {
 
   /// Defines if this field should be exported to `.env` file
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
+  
+  /// Defines if this field should be exported to Dart config file
+  bool get isConfigField => field[ConfigFieldType.CONFIG_FIELD] ?? true;
 
   /// Get value for config class
   ///

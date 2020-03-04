@@ -12,12 +12,19 @@ class ConfigGenerator {
   ConfigGenerator(this.config);
 
   Future<void> generate() {
-    List<Future<void>> futures = [
-      _generateClass(),
-    ];
+    List<Future<void>> futures = [];
 
+    if (config.createConfigClass) {
+      futures.add(_generateClass());
+    }
+    
     if (config.createDotEnv) {
       futures.add(_generateDotEnv());
+    }
+
+    if (futures.isEmpty) {
+      stdout.writeln('Nothing to generate');
+      return Future.value();
     }
 
     return Future.wait(futures);
@@ -38,7 +45,7 @@ class ConfigGenerator {
               Class((ClassBuilder builder) => builder
                 ..constructors.addAll(constructors)
                 ..name = config.className
-                ..fields.addAll(config.fields.map((FieldConfig field) => Field(
+                ..fields.addAll(config.classConfigFields.map((FieldConfig field) => Field(
                       (FieldBuilder builder) => builder
                         ..name = field.name
                         ..static = true
