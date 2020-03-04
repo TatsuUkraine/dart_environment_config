@@ -45,7 +45,8 @@ environment_config:
       const: # optional, default to TRUE
       pattern: # optional, specified pattern for key value, use __VALUE__ to insert entered value anywhere in the pattern
       default: # optional, default value for key, if not provided key will be required during command run
-      dotenv: true # optional, if this field should be added to .env file
+      dotenv: # optional, default to FALSE, if this field should be added to .env file
+      config_field: # optional, default to TRUE, if this field should be added to Dart file
       env_var: # optional, global environment variable name
       
   imports: # optional, array of imports, to include in config file
@@ -100,7 +101,7 @@ Also this package allows to generate `.env` file with same key value pairs
 
 During command run YAML file will be parsed to define keys for command.
 
-- `config` - path to yaml file with package configuration
+- `config` - path to custom yaml file with package configuration
 - any key name, that specified in yaml file under `fields` key
 
 For example. If you have next yaml config
@@ -293,15 +294,21 @@ To create `.env` at least one key should have `dotenv: true` attribute
 ```yaml
 environment_config:
   fields:
-    first_key:
+    first_key: # define field only in Dart class
       type: num
     second_key:
-      dotenv: true
+      dotenv: true # will define field in Dart and in `.env`
+    third_key:
+      dotenv: true # will define field in `.env`
+      config_field: false # will exclude field from Dart config file
 ```
+
+**Note** If `dotenv: false` and `config_field: false` this field won't
+be added to `.env` and Dart config class
 
 This command
 ```
-flutter pub run environment_config:generate --first_key=123 --second_key=456
+flutter pub run environment_config:generate --first_key=123 --second_key=456 --third_key=789
 ```
 
 will generate Dart class config in `lib/` folder
@@ -320,6 +327,7 @@ and following `.env` in your root app folder
 
 ```
 second_key=456
+third_key=789
 ```
 
 #### Global environment variable example
