@@ -4,6 +4,8 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 
 import 'config.dart';
+import 'config_field_type.dart';
+import 'errors/validation_error.dart';
 
 /// Generates Dart class and `env` file (if it's needed)
 class ConfigGenerator {
@@ -23,8 +25,10 @@ class ConfigGenerator {
     }
 
     if (futures.isEmpty) {
-      stdout.writeln('Nothing to generate');
-      return Future.value();
+      throw ValidationError(
+        ConfigFieldType.FIELDS,
+        'At least one field should be defined for `.env` or Dart config class'
+      );
     }
 
     return Future.wait(futures);
