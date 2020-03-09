@@ -135,6 +135,16 @@ class EnvironmentConfig {
 }
 ```
 
+### Multiple config files
+
+If you want to use different config YAML files for different environment
+or you need to generate multiple configurations, use `config` key during
+command run
+
+```
+flutter pub run environment_config:generate --config=path/to/file.yaml
+```
+
 ## Class configuration
 
 Class and file can be configured with next options
@@ -146,6 +156,7 @@ Class and file can be configured with next options
 - `const` - optional, defines if class constructor should be
 defined as `const`.
 - `imports` - array of imports to add to generated config file
+- `fields`- set of fields, that should be defined in configuration files
 
 If `class` is not specified value for class name will be generate based on
 file name in `path` field. It will convert `snake_case` into `CamelCase`.
@@ -235,9 +246,14 @@ field `__VALUE__` can be used. It will be replaced with actual entered value or 
 instead of full field name. Accepts 1 symbol values only
 - `dotenv` - bool flag, if `TRUE` this field will be added to `.env` file.
 - `env_var` - environment global variable name
+- `config_field` - default to `TRUE`, indicates if this field should be
+  defined in Dart class config
 
 **If you want to generate `.env` file in addition to class config, at least ONE
 key should have `dotenv` to be TRUE. Otherwise `.env` file won't be generated**
+
+**If field contains `dotenv: false` (which is default state) and
+`config_field: false` field will be ignored**
 
 **Note** If field config doesn't have `default` key specified it will be
 treated as **required**. Which means that you need provide value for
