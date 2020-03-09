@@ -1,3 +1,7 @@
+## [2.1.0+1] - 09.03.2020
+
+Minor changes in README.md
+
 ## [2.1.0] - 04.03.2020
 
 **Features**
