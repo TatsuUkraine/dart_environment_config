@@ -15,7 +15,13 @@ class Config {
   /// Config object from yaml file
   final Map<dynamic, dynamic> config;
 
-  Config(this.config, this.arguments);
+  final Iterable<FieldConfig> _fields;
+
+  Config(this.config, this.arguments)
+      : _fields = (config[ConfigFieldType.FIELDS] as Map<dynamic, dynamic>)
+            .keys
+            .map((key) => FieldConfig(key,
+                config[ConfigFieldType.FIELDS][key] ?? {}, arguments[key]));
 
   /// Target file for generated config class
   String get filePath {
@@ -44,25 +50,14 @@ class Config {
         .join('');
   }
 
-  /// Field configurations for config class
-  Iterable<FieldConfig> get fields {
-    final Map<dynamic, dynamic> fields = config[ConfigFieldType.FIELDS];
-
-    return fields.keys.map((key) => FieldConfig(
-      key,
-      config[ConfigFieldType.FIELDS][key] ?? {},
-      arguments[key]
-    ));
-  }
-
   /// Fields, that should be exported to `.env` file
   Iterable<FieldConfig> get dotEnvFields {
-    return fields.where((field) => field.isDotEnv);
+    return _fields.where((field) => field.isDotEnv);
   }
 
   /// Fields, that should be exported to Dart config file
   Iterable<FieldConfig> get classConfigFields {
-    return fields.where((field) => field.isConfigField);
+    return _fields.where((field) => field.isConfigField);
   }
 
   /// Collection if imports, that should be added to config class
@@ -87,12 +82,12 @@ class Config {
       return config[ConfigFieldType.CONST];
     }
 
-    return fields.every((field) => field.isConst);
+    return _fields.every((field) => field.isConst);
   }
 
   /// Defines if generator should try to create `.env` file
   bool get createDotEnv => dotEnvFields.isNotEmpty;
-  
+
   /// Defines if generator should try to create Dart config file
   bool get createConfigClass => classConfigFields.isNotEmpty;
 
@@ -120,7 +115,7 @@ class FieldConfig {
   final String _value;
 
   FieldConfig(this.name, this.field, [String value]) : _value = value {
-    if ((_value ?? field[ConfigFieldType.DEFAULT]) == null) {
+    if (_fieldValue == null) {
       throw ValidationError(name, '"$name" is required');
     }
   }
@@ -148,7 +143,7 @@ class FieldConfig {
 
   /// Defines if this field should be exported to `.env` file
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
-  
+
   /// Defines if this field should be exported to Dart config file
   bool get isConfigField => field[ConfigFieldType.CONFIG_FIELD] ?? true;
 
