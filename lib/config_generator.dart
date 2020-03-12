@@ -52,7 +52,7 @@ class ConfigGenerator {
                 ..fields.addAll(config.classConfigFields.map((FieldConfig field) => Field(
                       (FieldBuilder builder) => builder
                         ..name = field.name
-                        ..static = true
+                        ..static = field.isStatic
                         ..modifier = field.modifier
                         ..type = Reference(field.type)
                         ..assignment = Code(field.value),

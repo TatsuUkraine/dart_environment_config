@@ -15,4 +15,5 @@ class ConfigFieldType {
   static const String IS_DOTENV = 'dotenv';
   static const String ENV_VAR = 'env_var';
   static const String CONFIG_FIELD = 'config_field';
+  static const String STATIC = 'static';
 }

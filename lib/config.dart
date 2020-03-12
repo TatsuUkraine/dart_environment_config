@@ -72,18 +72,7 @@ class Config {
   }
 
   /// If class should contain `const` constructor
-  ///
-  /// In can be forced to be true with yaml config
-  ///
-  /// If config key not specified, class will have const constructor
-  /// if all fields are `const`
-  bool get isClassConst {
-    if (config.containsKey(ConfigFieldType.CONST)) {
-      return config[ConfigFieldType.CONST];
-    }
-
-    return _fields.every((field) => field.isConst);
-  }
+  bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
 
   /// Defines if generator should try to create `.env` file
   bool get createDotEnv => dotEnvFields.isNotEmpty;
@@ -139,7 +128,15 @@ class FieldConfig {
   /// Defines if field should be `const` or not
   ///
   /// If key not specified field will be treated as `const` by default
-  bool get isConst => field[ConfigFieldType.CONST] ?? true;
+  bool get isConst {
+    if (!isStatic) {
+      return false;
+    }
+
+    return field[ConfigFieldType.CONST] ?? true;
+  }
+
+  bool get isStatic => field[ConfigFieldType.STATIC] ?? true;
 
   /// Defines if this field should be exported to `.env` file
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
