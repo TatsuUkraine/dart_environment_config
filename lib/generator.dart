@@ -11,7 +11,7 @@ Future<void> generateConfig(List<String> arguments) {
   final parser = ArgumentParser(arguments, PlatformValueProvider());
 
   return loadConfig(parser.parseConfigPath()).then((yamlConfig) {
-    return Config(
+    return Config.fromMap(
       yamlConfig,
       parser.parseArguments(yamlConfig),
     );

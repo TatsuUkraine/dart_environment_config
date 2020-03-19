@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:code_builder/code_builder.dart';
 
+import 'errors/extension_not_found_error.dart';
 import 'errors/validation_error.dart';
 import 'config_field_type.dart';
 
@@ -15,13 +16,46 @@ class Config {
   /// Config object from yaml file
   final Map<dynamic, dynamic> config;
 
+  /// Extension config object from yaml file
+  final Map<dynamic, dynamic> extConfig;
+
   final Iterable<FieldConfig> _fields;
 
-  Config(this.config, this.arguments)
-      : _fields = (config[ConfigFieldType.FIELDS] as Map<dynamic, dynamic>)
-            .keys
-            .map((key) => FieldConfig(key,
-                config[ConfigFieldType.FIELDS][key] ?? {}, arguments[key]));
+  Config(this.config, this.arguments, Iterable<FieldConfig> fields, this.extConfig): _fields = fields;
+
+  factory Config.fromMap(Map<dynamic, dynamic> config, ArgResults args) {
+    final String devExtension = config[ConfigFieldType.DEV_EXTENSION] ?? 'dev';
+    final Map<dynamic, dynamic> configFields = config[ConfigFieldType.FIELDS];
+    final Map<dynamic, dynamic> extensions = config[ConfigFieldType.EXTENSIONS] ?? {};
+    Map<dynamic, dynamic> extension = {};
+    String extensionName = null;
+
+    if (args[devExtension]) {
+      extensionName = devExtension;
+    }
+
+    extensionName ??= args[ConfigFieldType.CONFIG_EXTENSION];
+
+    if (extensionName != null) {
+      if (!extensions.containsKey(extensionName)) {
+        throw ExtensionNotFound(extensionName);
+      }
+
+      extension = extensions[extensionName] ?? {};
+    }
+
+    Map<dynamic, dynamic> extensionFields = extension[ConfigFieldType.FIELDS] ?? {};
+
+    final Iterable<FieldConfig> fields = configFields.keys
+      .map((key) => FieldConfig(
+        key,
+        config[ConfigFieldType.FIELDS][key] ?? {},
+        extensionFields[key] ?? {},
+        args[key]
+      ));
+
+    return Config(config, args, fields, extension);
+  }
 
   /// Target file for generated config class
   String get filePath {
@@ -61,15 +95,10 @@ class Config {
   }
 
   /// Collection if imports, that should be added to config class
-  Iterable<String> get imports {
-    if (!config.containsKey(ConfigFieldType.IMPORTS)) {
-      return [];
-    }
-
-    final List<dynamic> imports = config[ConfigFieldType.IMPORTS];
-
-    return imports?.map((f) => f as String) ?? [];
-  }
+  Iterable<String> get imports => [
+    ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
+    ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
+  ];
 
   /// If class should contain `const` constructor
   bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
@@ -100,10 +129,13 @@ class FieldConfig {
   /// Field configuration from YAML file
   final Map<dynamic, dynamic> field;
 
+  /// Field configuration from YAML file
+  final Map<dynamic, dynamic> extField;
+
   /// Value provided from command params
   final String _value;
 
-  FieldConfig(this.name, this.field, [String value]) : _value = value {
+  FieldConfig(this.name, this.field, this.extField, [String value]) : _value = value {
     if (_fieldValue == null) {
       throw ValidationError(name, '"$name" is required');
     }
@@ -133,10 +165,11 @@ class FieldConfig {
       return false;
     }
 
-    return field[ConfigFieldType.CONST] ?? true;
+    return extField[ConfigFieldType.CONST] ?? field[ConfigFieldType.CONST] ?? true;
   }
 
-  bool get isStatic => field[ConfigFieldType.STATIC] ?? true;
+  /// Is Field should be defined as STATIC
+  bool get isStatic => extField[ConfigFieldType.STATIC] ?? field[ConfigFieldType.STATIC] ?? true;
 
   /// Defines if this field should be exported to `.env` file
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
@@ -166,7 +199,7 @@ class FieldConfig {
     return _pattern?.replaceAll(_PATTERN_REGEXP, _fieldValue) ?? _fieldValue;
   }
 
-  String get _pattern => field[ConfigFieldType.PATTERN];
+  String get _pattern => extField[ConfigFieldType.PATTERN] ?? field[ConfigFieldType.PATTERN];
 
-  String get _fieldValue => _value ?? field[ConfigFieldType.DEFAULT];
+  String get _fieldValue => _value ?? extField[ConfigFieldType.DEFAULT] ?? field[ConfigFieldType.DEFAULT];
 }

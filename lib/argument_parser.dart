@@ -44,8 +44,12 @@ class ArgumentParser {
     }
 
     final params = config[ConfigFieldType.FIELDS];
+    final String devExtension = config[ConfigFieldType.DEV_EXTENSION] ?? 'dev';
 
-    parser.addOption(ConfigFieldType.CONFIG);
+    parser
+      ..addOption(ConfigFieldType.CONFIG)
+      ..addOption(ConfigFieldType.CONFIG_EXTENSION)
+      ..addFlag(devExtension);
 
     params.keys.forEach((key) {
       if (params[key] != null && params[key] is! Map) {
