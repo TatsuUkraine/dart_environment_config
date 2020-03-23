@@ -1,7 +1,7 @@
 /// Set of fields used in YAML document
 class ConfigFieldType {
   static const String CONFIG = 'config';
-  static const String CONFIG_EXTENSION = 'config_extension';
+  static const String CONFIG_EXTENSION = 'config-extension';
   static const String FIELDS = 'fields';
   static const String IMPORTS = 'imports';
   static const String CLASS = 'class';

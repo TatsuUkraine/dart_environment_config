@@ -8,10 +8,11 @@ import 'config_loader.dart';
 
 /// Entry point of command run
 Future<void> generateConfig(List<String> arguments) {
-  final parser = ArgumentParser(arguments, PlatformValueProvider());
+  final parser = ArgumentParser(arguments);
 
   return loadConfig(parser.parseConfigPath()).then((yamlConfig) {
     return Config.fromMap(
+      PlatformValueProvider(),
       yamlConfig,
       parser.parseArguments(yamlConfig),
     );

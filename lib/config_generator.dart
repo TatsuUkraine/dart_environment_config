@@ -6,6 +6,7 @@ import 'package:dart_style/dart_style.dart';
 import 'config.dart';
 import 'config_field_type.dart';
 import 'errors/validation_error.dart';
+import 'field_config.dart';
 
 /// Generates Dart class and `env` file (if it's needed)
 class ConfigGenerator {
