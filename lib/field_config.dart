@@ -61,7 +61,7 @@ class FieldConfig {
   }
 
   /// Is Field should be defined as STATIC
-  bool get isStatic => extField[ConfigFieldType.STATIC] ?? field[ConfigFieldType.STATIC] ?? true;
+  bool get isStatic => field[ConfigFieldType.STATIC] ?? true;
 
   /// Defines if this field should be exported to `.env` file
   bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
@@ -94,7 +94,7 @@ class FieldConfig {
   String get _pattern => extField[ConfigFieldType.PATTERN] ?? field[ConfigFieldType.PATTERN];
 
   String get _globalValue {
-    final String globalKey = field[ConfigFieldType.ENV_VAR];
+    final String globalKey = extField[ConfigFieldType.ENV_VAR] ?? field[ConfigFieldType.ENV_VAR];
 
     if ((globalKey ?? '').isNotEmpty) {
       return _valueProvider.getValue(globalKey);
