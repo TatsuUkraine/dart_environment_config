@@ -1,3 +1,7 @@
+## [2.2.0+2] - 26.03.2020
+
+Remove wrongly committed file
+
 ## [2.2.0+1] - 26.03.2020
 
 Codestyle hotfix
