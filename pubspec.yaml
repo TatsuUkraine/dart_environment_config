@@ -18,4 +18,16 @@ dependencies:
 # Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
 environment_config:
   fields:
-    env:
+    first_key:
+
+  imports:
+    - some:package
+
+  extensions:
+    dev:
+      fields:
+        first_key:
+          default: some value
+
+      imports:
+        - other:package
