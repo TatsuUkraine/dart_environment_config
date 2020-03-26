@@ -1,3 +1,13 @@
+## [2.2.0] - 26.03.2020
+
+Features:
+- added extension support
+- added dev extension support
+- added toggle for `static` modifier
+
+Bug fixes:
+- changed rules for constructor generation
+
 ## [2.1.0+1] - 09.03.2020
 
 Minor changes in README.md
