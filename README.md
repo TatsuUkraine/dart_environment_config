@@ -36,6 +36,9 @@ So by default `.env` file will be generated alongside with
       - [Pattern example](#pattern-example)
       - [DotEnv example](#dotenv-example)
       - [Global environment variable example](#global-environment-variable-example)
+  - [Extensions](#extensions)
+    - [Basic Extension config usage](#basic-extension-config-usage)
+    - [Development Extension example](#development-extension-example)
 - [Integration with CI/CD](#integration-with-cicd)
 - [Integration with other packages](#integration-with-other-packages)
 
@@ -75,7 +78,7 @@ environment_config:
         const: # optional, overrides `const` value for the field
         pattern: # optional, overrides `pattern` value for the field
         default: # optional, overrides `default` value for the field
-        static: # optional, overrides `static` value for the field
+        env_var: # optional, overrides `env_var` value for the field
         
     imports: # optional, adds set of imports to main configulration
       - package:some_other_package
@@ -384,7 +387,114 @@ for your key.
 Generator will use next priority:
 - value from command arguments
 - value from environment variable `PATH`
+- value from [Extensions](#extensions) `default` key (if extension was
+  used that has `default` key)
 - value from `default` key (if it was specified)
+
+## Extensions
+
+Extensions allows you to define set of override rules for fields and
+imports.
+
+Primarily extensions are needed to override main configuration and
+provide some specific settings for environment like dev. That is why it
+allows to override just specific set of configuration keys for specific
+field:
+- const
+- pattern
+- default
+- env_var
+
+Extension won't override other field keys to keep config class signature
+consistent (if you need to add other keys in this list, feel free to
+open an issue for that).
+
+Also extension allows you to define import list in addition to default
+config. If extension is used - import list will be merged from default
+config and extension config
+
+### Basic Extension config usage
+
+To use extension define it in config:
+
+```yaml
+environment_config:
+  fields:
+    first_key:
+    
+  imports:
+    - some:package
+      
+  extensions:
+    dev: # can be any value here
+      fields:
+        first_key:
+          default: some value
+      
+      imports:
+        - other:package
+```
+
+Then if you run command like this
+
+```
+flutter pub run environment_config:generate
+```
+
+It will throw an error that `first_key` is required. But you use
+extension
+
+```
+flutter pub run environment_config:generate --config-extension=dev
+```
+
+It will generate following config class
+
+```dart
+import 'some:package';
+import 'other:package';
+
+class EnvironmentConfig {
+  static const String first_key = 'some value';
+}
+```
+
+### Development Extension example
+
+**Note** Don't use development extension in your automated build tools.
+There is a plan add verbose command run support eventually.
+
+Most common case when extension can be used is for your Dev environment.
+In that way your default config will ensure that all fields are provided
+by build tool, and in same time - to generate config for dev
+environment, you won't need to define values for your fields.
+
+To enable dev extension just add `dev_extension`
+
+```diff
+environment_config:
++  dev_extension: dev
+  fields:
+    first_key:
+    
+  imports:
+    - some:package
+      
+  extensions:
+    dev:
+      fields:
+        first_key:
+          default: some value
+      
+      imports:
+        - other:package
+```
+
+Then you can run command like this
+
+```
+flutter pub run environment_config:generate --dev
+```
 
 ## Integration with CI/CD
 
