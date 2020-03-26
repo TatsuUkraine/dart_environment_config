@@ -1,7 +1,6 @@
 import 'package:args/args.dart';
 import 'package:yaml/yaml.dart';
 
-import 'platform_value_provider.dart';
 import 'config_field_type.dart';
 import 'errors/malformed_config_error.dart';
 import 'errors/validation_error.dart';
@@ -11,9 +10,7 @@ class ArgumentParser {
   /// Arguments from command params
   final List<String> arguments;
 
-  final PlatformValueProvider valueProvider;
-
-  ArgumentParser(this.arguments, this.valueProvider);
+  ArgumentParser(this.arguments);
 
   /// Defines if `config` key was specified
   /// during command run
@@ -31,7 +28,7 @@ class ArgumentParser {
   }
 
   /// Provides arguments from command based on YAML fields config
-  ArgResults parseArguments(YamlMap config) {
+  Map<String, dynamic> parseArguments(YamlMap config) {
     final ArgParser parser = ArgParser();
 
     if (!config.containsKey(ConfigFieldType.FIELDS)) {
@@ -45,7 +42,13 @@ class ArgumentParser {
 
     final params = config[ConfigFieldType.FIELDS];
 
-    parser.addOption(ConfigFieldType.CONFIG);
+    if (config.containsKey(ConfigFieldType.DEV_EXTENSION)) {
+      parser.addFlag(config[ConfigFieldType.DEV_EXTENSION]);
+    }
+
+    parser
+      ..addOption(ConfigFieldType.CONFIG)
+      ..addOption(ConfigFieldType.CONFIG_EXTENSION);
 
     params.keys.forEach((key) {
       if (params[key] != null && params[key] is! Map) {
@@ -54,20 +57,18 @@ class ArgumentParser {
 
       final Map<dynamic, dynamic> value = params[key] ?? {};
 
-      final String globalKey = value[ConfigFieldType.ENV_VAR];
-      String defaultValue;
-
-      if ((globalKey ?? '').isNotEmpty) {
-        defaultValue = valueProvider.getValue(globalKey);
-      }
-
       parser.addOption(
         key,
         abbr: value[ConfigFieldType.SHORT_NAME],
-        defaultsTo: defaultValue,
       );
     });
 
-    return parser.parse(arguments);
+    final parsedArguments = parser.parse(arguments);
+
+    return Map.fromIterable(
+      parsedArguments.options,
+      key: (dynamic key) => key,
+      value: (dynamic key) => parsedArguments[key],
+    );
   }
 }

@@ -24,6 +24,24 @@ folder.
 So by default `.env` file will be generated alongside with
 `pubspec.yaml` and other root files.
 
+## Table of contents
+
+- [Getting Started](#getting-started)
+- [Configuration](#config)
+  - [Command options](#command-options)
+  - [Class configuration](#class-configuration)
+    - [Class configuration examples](#config-examples)
+  - [Field configuration](#field-configuration)
+    - [Fields config examples](#fields-config-examples)
+      - [Pattern example](#pattern-example)
+      - [DotEnv example](#dotenv-example)
+      - [Global environment variable example](#global-environment-variable-example)
+  - [Extensions](#extensions)
+    - [Basic Extension config usage](#basic-extension-config-usage)
+    - [Development Extension example](#development-extension-example)
+- [Integration with CI/CD](#integration-with-cicd)
+- [Integration with other packages](#integration-with-other-packages)
+
 ## Getting Started
 
 Install package as dependency.
@@ -37,6 +55,7 @@ environment_config:
   path: environment_config.dart # optional, result file path against `lib/` folder
   dotenv_path: .env # optional, result file path for .env file against project root folder
   class: EnvironmentConfig # optional, class name
+  dev_extension: # optional, by default undefined, allows to specify command option to use extension
   
   fields: # set of fields for command
     some_key: # key name
@@ -48,9 +67,22 @@ environment_config:
       dotenv: # optional, default to FALSE, if this field should be added to .env file
       config_field: # optional, default to TRUE, if this field should be added to Dart file
       env_var: # optional, global environment variable name
+      static: # options, default to TRUE, if this field should be static, if FALSE, `const` will be be ignored
       
   imports: # optional, array of imports, to include in config file
     - package:some_package
+      
+  extensions: # set of extensions for default field list
+    some_extension: # extension name
+      some_key:
+        const: # optional, overrides `const` value for the field
+        pattern: # optional, overrides `pattern` value for the field
+        default: # optional, overrides `default` value for the field
+        env_var: # optional, overrides `env_var` value for the field
+        
+    imports: # optional, adds set of imports to main configulration
+      - package:some_other_package
+      
 ```
 
 Run `pub get` to install dependencies.
@@ -102,7 +134,10 @@ Also this package allows to generate `.env` file with same key value pairs
 During command run YAML file will be parsed to define keys for command.
 
 - `config` - path to custom yaml file with package configuration
+- `config_extension` - name of the extension, that should be used for
+  config generation
 - any key name, that specified in yaml file under `fields` key
+- `dev_extension` key name, allows to use this key as bool flag
 
 For example. If you have next yaml config
 
@@ -157,13 +192,14 @@ Class and file can be configured with next options
 defined as `const`.
 - `imports` - array of imports to add to generated config file
 - `fields`- set of fields, that should be defined in configuration files
+- `dev_extension` - defines which extension should be treated as dev
+  extension, if specified - it's value can be used during command run as
+  bool flag
+- `extensions` - set of configurations, that can extend default config
 
-If `class` is not specified value for class name will be generate based on
-file name in `path` field. It will convert `snake_case` into `CamelCase`.
-
-If `const` not provided builder will analyze each field and if all of them
-are `const` - it will add const constructor. Otherwise generated class
-will be without any constructor
+If `class` is not specified value for class name will be generate based
+on file name in `path` field. It will convert `snake_case` into
+`CamelCase`.
 
 Field `dotenv_path` will be used only if at least one field contains `dotenv: true`
 
@@ -222,9 +258,6 @@ class OtherClass {
 ```
 
 If `const` is used it will force class to have const constructor or without it.
-Without it, builder will analyze each field, and if **ALL** of them are
-`const`, builder will generate `const` constructor, otherwise - class will
-be generated without any constructor
 
 ## Field configuration
 
@@ -236,11 +269,17 @@ should be specified
 **Note:** `config` key can't be used for field definition. It's reserved
 by command itself to define path to custom config yaml file
 
+**Note** If `dev_extension` is defined, its value can't be used as field
+name
+
 Each field accepts next params, each param is **optional**
 - `type` - field type, default to `String`
 - `const` - if field should be `const`, default to `TRUE`. If `FALSE`, `final` modifier will be used instead
-- `pattern` - pattern for field value. Inside value for this
-field `__VALUE__` can be used. It will be replaced with actual entered value or with default value
+- `static` - if field should be `static`, default to `TRUE`. If `FALSE`,
+  `const` option will be ignored
+- `pattern` - pattern for field value. Inside value for this field
+  `__VALUE__` can be used. It will be replaced with actual entered value
+  or with default value
 - `default` - default value for the field. If not specified, field will be treated as required
 - `short_name` - short key name, that can be used during command run
 instead of full field name. Accepts 1 symbol values only
@@ -364,7 +403,114 @@ for your key.
 Generator will use next priority:
 - value from command arguments
 - value from environment variable `PATH`
+- value from [Extensions](#extensions) `default` key (if extension was
+  used that has `default` key)
 - value from `default` key (if it was specified)
+
+## Extensions
+
+Extensions allows you to define set of override rules for fields and
+imports.
+
+Primarily extensions are needed to override main configuration and
+provide some specific settings for environment like dev. That is why it
+allows to override just specific set of configuration keys for specific
+field:
+- const
+- pattern
+- default
+- env_var
+
+Extension won't override other field keys to keep config class signature
+consistent (if you need to add other keys in this list, feel free to
+open an issue for that).
+
+Also extension allows you to define import list in addition to default
+config. If extension is used - import list will be merged from default
+config and extension config
+
+### Basic Extension config usage
+
+To use extension define it in config:
+
+```yaml
+environment_config:
+  fields:
+    first_key:
+    
+  imports:
+    - some:package
+      
+  extensions:
+    dev: # your extension name
+      fields:
+        first_key:
+          default: some value
+      
+      imports:
+        - other:package
+```
+
+Then if you run command like this
+
+```
+flutter pub run environment_config:generate
+```
+
+It will throw an error that `first_key` is required. But you use
+extension
+
+```
+flutter pub run environment_config:generate --config-extension=dev
+```
+
+It will generate following config class
+
+```dart
+import 'some:package';
+import 'other:package';
+
+class EnvironmentConfig {
+  static const String first_key = 'some value';
+}
+```
+
+### Development Extension example
+
+**Note** Don't use development extension in your automated build tools.
+There is a plan add verbose command run support eventually.
+
+Most common case when extension can be used is for your Dev environment.
+In that way your default config will ensure that all fields are provided
+by build tool, and in same time - to generate config for dev
+environment, you won't need to define values for your fields.
+
+To enable dev extension just add `dev_extension`
+
+```diff
+environment_config:
++ dev_extension: dev
+  fields:
+    first_key:
+    
+  imports:
+    - some:package
+      
+  extensions:
+    dev:
+      fields:
+        first_key:
+          default: some value
+      
+      imports:
+        - other:package
+```
+
+Then you can run command like this
+
+```
+flutter pub run environment_config:generate --dev
+```
 
 ## Integration with CI/CD
 

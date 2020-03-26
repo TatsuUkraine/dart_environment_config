@@ -1,6 +1,6 @@
 name: environment_config
 description: Environment specific config generator. Allows to specify env configuration during CI/CD build. Primarily created to simplify Flutter build configuration
-version: 2.1.0+1
+version: 2.2.0
 author: TatsuUkraine <tatsu.ukraine@gmail.com>
 homepage: https://github.com/TatsuUkraine/dart_environment_config
 repository: https://github.com/TatsuUkraine/dart_environment_config
@@ -18,4 +18,16 @@ dependencies:
 # Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
 environment_config:
   fields:
-    env:
+    first_key:
+
+  imports:
+    - some:package
+
+  extensions:
+    dev:
+      fields:
+        first_key:
+          default: some value
+
+      imports:
+        - other:package

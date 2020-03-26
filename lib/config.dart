@@ -1,21 +1,62 @@
-import 'package:args/args.dart';
-import 'package:code_builder/code_builder.dart';
-
-import 'errors/validation_error.dart';
+import 'errors/extension_not_found_error.dart';
 import 'config_field_type.dart';
-
-final RegExp _PATTERN_REGEXP = RegExp(r'__VALUE__');
+import 'field_config.dart';
+import 'platform_value_provider.dart';
 
 /// Config object that provides parsed
 /// params from command
 class Config {
   /// Arguments from command
-  final ArgResults arguments;
+  final Map<String, dynamic> arguments;
 
   /// Config object from yaml file
   final Map<dynamic, dynamic> config;
 
-  Config(this.config, this.arguments);
+  /// Extension config object from yaml file
+  final Map<dynamic, dynamic> extConfig;
+
+  final Iterable<FieldConfig> _fields;
+
+  Config(this.config, this.arguments, Iterable<FieldConfig> fields, this.extConfig): _fields = fields;
+
+  factory Config.fromMap(
+    PlatformValueProvider valueProvider,
+    Map<dynamic, dynamic> config,
+    Map<dynamic, dynamic> args
+  ) {
+    final String devExtension = config[ConfigFieldType.DEV_EXTENSION];
+    final Map<dynamic, dynamic> configFields = config[ConfigFieldType.FIELDS];
+    final Map<dynamic, dynamic> extensions = config[ConfigFieldType.EXTENSIONS] ?? {};
+    Map<dynamic, dynamic> extension = {};
+    String extensionName = null;
+
+    if (devExtension != null && args[devExtension]) {
+      extensionName = devExtension;
+    }
+
+    extensionName ??= args[ConfigFieldType.CONFIG_EXTENSION];
+
+    if (extensionName != null) {
+      if (!extensions.containsKey(extensionName)) {
+        throw ExtensionNotFound(extensionName);
+      }
+
+      extension = extensions[extensionName] ?? {};
+    }
+
+    Map<dynamic, dynamic> extensionFields = extension[ConfigFieldType.FIELDS] ?? {};
+
+    final Iterable<FieldConfig> fields = configFields.keys
+      .map((key) => FieldConfig(
+        valueProvider,
+        key,
+        config[ConfigFieldType.FIELDS][key] ?? {},
+        extensionFields[key] ?? {},
+        args[key]
+      ));
+
+    return Config(config, args, fields, extension);
+  }
 
   /// Target file for generated config class
   String get filePath {
@@ -44,60 +85,33 @@ class Config {
         .join('');
   }
 
-  /// Field configurations for config class
-  Iterable<FieldConfig> get fields {
-    final Map<dynamic, dynamic> fields = config[ConfigFieldType.FIELDS];
-
-    return fields.keys.map((key) => FieldConfig(
-      key,
-      config[ConfigFieldType.FIELDS][key] ?? {},
-      arguments[key]
-    ));
-  }
-
   /// Fields, that should be exported to `.env` file
   Iterable<FieldConfig> get dotEnvFields {
-    return fields.where((field) => field.isDotEnv);
+    return _fields.where((field) => field.isDotEnv);
   }
 
   /// Fields, that should be exported to Dart config file
   Iterable<FieldConfig> get classConfigFields {
-    return fields.where((field) => field.isConfigField);
+    return _fields.where((field) => field.isConfigField);
   }
 
   /// Collection if imports, that should be added to config class
-  Iterable<String> get imports {
-    if (!config.containsKey(ConfigFieldType.IMPORTS)) {
-      return [];
-    }
-
-    final List<dynamic> imports = config[ConfigFieldType.IMPORTS];
-
-    return imports?.map((f) => f as String) ?? [];
-  }
+  Iterable<String> get imports => [
+    ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
+    ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
+  ];
 
   /// If class should contain `const` constructor
-  ///
-  /// In can be forced to be true with yaml config
-  ///
-  /// If config key not specified, class will have const constructor
-  /// if all fields are `const`
-  bool get isClassConst {
-    if (config.containsKey(ConfigFieldType.CONST)) {
-      return config[ConfigFieldType.CONST];
-    }
-
-    return fields.every((field) => field.isConst);
-  }
+  bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
 
   /// Defines if generator should try to create `.env` file
   bool get createDotEnv => dotEnvFields.isNotEmpty;
-  
+
   /// Defines if generator should try to create Dart config file
   bool get createConfigClass => classConfigFields.isNotEmpty;
 
   String _getConfigValue(key, [String defaultValue]) {
-    if (arguments.arguments.contains(key) && !arguments[key].isEmpty) {
+    if (arguments.containsKey(key) && !arguments[key].isEmpty) {
       return arguments[key];
     }
 
@@ -107,74 +121,4 @@ class Config {
 
     return defaultValue;
   }
-}
-
-class FieldConfig {
-  /// Field name
-  final String name;
-
-  /// Field configuration from YAML file
-  final Map<dynamic, dynamic> field;
-
-  /// Value provided from command params
-  final String _value;
-
-  FieldConfig(this.name, this.field, [String value]) : _value = value {
-    if ((_value ?? field[ConfigFieldType.DEFAULT]) == null) {
-      throw ValidationError(name, '"$name" is required');
-    }
-  }
-
-  /// Field type
-  ///
-  /// Default to `String`
-  String get type => field[ConfigFieldType.TYPE] ?? 'String';
-
-  /// Field modifier
-  ///
-  /// If field is `const` provides Field builder modifier
-  FieldModifier get modifier {
-    if (isConst) {
-      return FieldModifier.constant;
-    }
-
-    return FieldModifier.final$;
-  }
-
-  /// Defines if field should be `const` or not
-  ///
-  /// If key not specified field will be treated as `const` by default
-  bool get isConst => field[ConfigFieldType.CONST] ?? true;
-
-  /// Defines if this field should be exported to `.env` file
-  bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
-  
-  /// Defines if this field should be exported to Dart config file
-  bool get isConfigField => field[ConfigFieldType.CONFIG_FIELD] ?? true;
-
-  /// Get value for config class
-  ///
-  /// If `pattern` is specified, value will injected into it
-  String get value {
-    String pattern = _pattern;
-
-    if (_pattern == null && type == 'String') {
-      pattern = '\'__VALUE__\'';
-    }
-
-    if (pattern == null) {
-      return _fieldValue;
-    }
-
-    return pattern.replaceAll(_PATTERN_REGEXP, _fieldValue);
-  }
-
-  /// Value for key in `.env` file
-  String get dotEnvValue {
-    return _pattern?.replaceAll(_PATTERN_REGEXP, _fieldValue) ?? _fieldValue;
-  }
-
-  String get _pattern => field[ConfigFieldType.PATTERN];
-
-  String get _fieldValue => _value ?? field[ConfigFieldType.DEFAULT];
 }
