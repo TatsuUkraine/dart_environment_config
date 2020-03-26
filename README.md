@@ -473,7 +473,7 @@ To enable dev extension just add `dev_extension`
 
 ```diff
 environment_config:
-+  dev_extension: dev
++ dev_extension: dev
   fields:
     first_key:
     
