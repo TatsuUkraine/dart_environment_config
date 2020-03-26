@@ -28,7 +28,7 @@ class Config {
     final Map<dynamic, dynamic> configFields = config[ConfigFieldType.FIELDS];
     final Map<dynamic, dynamic> extensions = config[ConfigFieldType.EXTENSIONS] ?? {};
     Map<dynamic, dynamic> extension = {};
-    String extensionName = null;
+    String extensionName;
 
     if (devExtension != null && args[devExtension]) {
       extensionName = devExtension;
