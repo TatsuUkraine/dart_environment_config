@@ -426,7 +426,7 @@ environment_config:
     - some:package
       
   extensions:
-    dev: # can be any value here
+    dev: # your extension name
       fields:
         first_key:
           default: some value
