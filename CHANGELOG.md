@@ -1,3 +1,10 @@
+## [2.2.1] - 19.04.2020
+
+Changes:
+- Replace dependencies with version constraints
+- Fix example YAML config
+- Small changes in Documentation
+
 ## [2.2.0+2] - 26.03.2020
 
 Remove wrongly committed file
