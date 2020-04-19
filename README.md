@@ -489,7 +489,7 @@ To enable dev extension just add `dev_extension`
 
 ```diff
 environment_config:
-+ dev_extension: dev
+  dev_extension: dev # `dev` here is the name of you extension
   fields:
     first_key:
     
@@ -506,7 +506,8 @@ environment_config:
         - other:package
 ```
 
-Then you can run command like this
+Then you can run command like this, where `dev` is key name from
+`dev_extension`
 
 ```
 flutter pub run environment_config:generate --dev
