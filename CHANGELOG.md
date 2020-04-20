@@ -1,3 +1,7 @@
+## [2.2.2] - 20.04.2020
+
+- changed version ranges for dependencies
+
 ## [2.2.1] - 19.04.2020
 
 Changes:
