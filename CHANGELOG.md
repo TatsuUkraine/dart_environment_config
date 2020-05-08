@@ -1,3 +1,8 @@
+## [2.2.3] - 08.05.2020
+
+- fixed boolean value usage as default value for the field
+- added **Note** for Flutter developers to the Readme file
+
 ## [2.2.2] - 20.04.2020
 
 - changed version ranges for dependencies
