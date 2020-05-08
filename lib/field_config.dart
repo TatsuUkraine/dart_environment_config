@@ -104,6 +104,6 @@ class FieldConfig {
   }
 
   String get _fieldValue {
-    return _value ?? _globalValue ?? extField[ConfigFieldType.DEFAULT] ?? field[ConfigFieldType.DEFAULT];
+    return (_value ?? _globalValue ?? extField[ConfigFieldType.DEFAULT] ?? field[ConfigFieldType.DEFAULT])?.toString();
   }
 }

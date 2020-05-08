@@ -15,6 +15,14 @@ Primarily created to simplify Flutter build configuration.
 - allows to define required and optional keys for generation
 - allows to export variables to `.env` file
 
+## Note for Flutter developers
+
+This package still will be maintained, but if you are using Flutter
+version 1.17 and higher, consider using compile-time variables to
+configure your environments instead of this package. More about
+compile-time variables you can read
+[here](https://medium.com/@tatsu.ukraine/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d)
+
 ## Migration from 1.x.x to 2.x.x
 
 In `1.x.x` path for `.env` was generated against `lib/` folder. Starting
