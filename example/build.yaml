@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      'environment_config:env_config_generator':
+        options:
+          "--config-extension": "dev"

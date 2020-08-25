@@ -1,0 +1,17 @@
+# Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
+environment_config:
+  path: generated/environment_config.dart
+  fields:
+    hello:
+
+  imports:
+    - dart:io
+
+  extensions:
+    dev:
+      fields:
+        hello:
+          default: 'Hello, Config!'
+
+      imports:
+        - dart:async
