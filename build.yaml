@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      'environment_config:env_config_generator':
+        enabled: true
+
+
+builders:
+  env_config_generator:
+    import: 'package:environment_config/generator.dart'
+    builder_factories: ["generateConfig"]
+    build_extensions:
+      '.yaml': ['.dart']
+    auto_apply: dependents
