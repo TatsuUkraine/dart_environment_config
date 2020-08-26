@@ -1,8 +1,5 @@
-/// 1. Install your project dependencies
-///
-/// 2. Run `flutter pub run environment_config:generate` with key and values specified
-/// in your YAML config
-///
-/// 3. Import generated file
+import 'package:environment_config_example/example.dart';
 
-import 'environment_config.dart';
+void main() {
+  print(EnvironmentConfig.hello);
+}
