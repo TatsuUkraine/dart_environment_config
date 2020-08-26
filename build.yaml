@@ -7,7 +7,7 @@ targets:
 
 builders:
   env_config_generator:
-    import: 'package:environment_config/generator.dart'
+    import: 'package:environment_config/builder.dart'
     builder_factories: ["generateConfig"]
     build_extensions:
       '.yaml': ['.dart']

@@ -1,46 +1,28 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:build/build.dart';
-import 'package:environment_config/argument_parser.dart';
-import 'package:environment_config/config.dart';
-import 'package:environment_config/config_generator.dart';
-import 'package:environment_config/config_loader.dart';
-import 'package:environment_config/platform_value_provider.dart';
+import 'platform_value_provider.dart';
+import 'argument_parser.dart';
+import 'config.dart';
+import 'config_generator.dart';
+import 'config_loader.dart';
 
-Builder generateConfig(BuilderOptions builderOptions) =>
-    _GenerateConfig(builderOptions);
+/// Entry point of command run
+Future<void> generateConfig(List<String> arguments) {
+  final parser = ArgumentParser(arguments);
 
-class _GenerateConfig extends Builder {
-  final List<String> arguments;
+  return loadConfig(parser.parseConfigPath()).then((yamlConfig) {
+    return Config.fromMap(
+      PlatformValueProvider(),
+      yamlConfig,
+      parser.parseArguments(yamlConfig),
+    );
+  }).then((config) {
+    return ConfigGenerator(config).generate();
+  }).then((_) {
+    exitCode = 0;
+  }).catchError((e) {
+    exitCode = 2;
 
-  _GenerateConfig(BuilderOptions builderOptions)
-      : arguments = builderOptions.config.entries
-            .map((e) => e.value != null ? '${e.key}=${e.value}' : e.key)
-            .toList(growable: false);
-
-  @override
-  final buildExtensions = const {
-    '.yaml': ['.dart']
-  };
-
-  @override
-  FutureOr<void> build(BuildStep buildStep) {
-    final parser = ArgumentParser(arguments);
-
-    return loadConfig(parser.parseConfigPath())
-        .then((yamlConfig) => Config.fromMap(
-              PlatformValueProvider(),
-              yamlConfig,
-              parser.parseArguments(yamlConfig),
-            ))
-        .then((config) => ConfigGenerator(config).generate())
-        .then((_) {
-      exitCode = 0;
-    }).catchError((e) {
-      exitCode = 2;
-
-      stderr.writeln(e);
-    });
-  }
+    stderr.writeln(e);
+  });
 }
