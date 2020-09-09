@@ -1,3 +1,7 @@
+## [2.2.4] - 09.09.2020
+
+- fix `dart_style` package version to avoid conflicts with flutter deps
+
 ## [2.2.3] - 08.05.2020
 
 - fixed boolean value usage as default value for the field

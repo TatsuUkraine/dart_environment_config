@@ -1,0 +1,26 @@
+name: environment_config_example
+version: 0.0.1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  environment_config:
+    path: ../
+
+# Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
+environment_config:
+  fields:
+    env:
+
+  imports:
+    - some:package
+
+  extensions:
+    dev:
+      fields:
+        env:
+          default: some value
+
+      imports:
+        - other:package
