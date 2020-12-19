@@ -1,3 +1,7 @@
+## [2.2.5] - 19.12.2020
+
+- remove lock file, change `dart_style` version range
+
 ## [2.2.4] - 09.09.2020
 
 - fix `dart_style` package version to avoid conflicts with flutter deps
