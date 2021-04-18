@@ -1,3 +1,7 @@
+## [2.3.0] - 19.04.2021
+
+- update deps versions
+
 ## [2.2.5] - 19.12.2020
 
 - remove lock file, change `dart_style` version range
