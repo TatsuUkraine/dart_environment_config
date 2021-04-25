@@ -17,18 +17,19 @@ class Config {
 
   final Iterable<FieldConfig> _fields;
 
-  Config(this.config, this.arguments, Iterable<FieldConfig> fields, this.extConfig): _fields = fields;
+  Config(
+      this.config, this.arguments, Iterable<FieldConfig> fields, this.extConfig)
+      : _fields = fields;
 
-  factory Config.fromMap(
-    PlatformValueProvider valueProvider,
-    Map<dynamic, dynamic> config,
-    Map<dynamic, dynamic> args
-  ) {
-    final String devExtension = config[ConfigFieldType.DEV_EXTENSION];
+  factory Config.fromMap(PlatformValueProvider valueProvider,
+      Map<dynamic, dynamic> config, Map<String, dynamic> args) {
+    final String? devExtension = config[ConfigFieldType.DEV_EXTENSION];
     final Map<dynamic, dynamic> configFields = config[ConfigFieldType.FIELDS];
-    final Map<dynamic, dynamic> extensions = config[ConfigFieldType.EXTENSIONS] ?? {};
+    final Map<dynamic, dynamic> extensions =
+        config[ConfigFieldType.EXTENSIONS] ?? {};
+
     Map<dynamic, dynamic> extension = {};
-    String extensionName;
+    String? extensionName;
 
     if (devExtension != null && args[devExtension]) {
       extensionName = devExtension;
@@ -44,40 +45,38 @@ class Config {
       extension = extensions[extensionName] ?? {};
     }
 
-    Map<dynamic, dynamic> extensionFields = extension[ConfigFieldType.FIELDS] ?? {};
+    Map<dynamic, dynamic> extensionFields =
+        extension[ConfigFieldType.FIELDS] ?? {};
 
-    final Iterable<FieldConfig> fields = configFields.keys
-      .map((key) => FieldConfig(
-        valueProvider,
-        key,
-        config[ConfigFieldType.FIELDS][key] ?? {},
-        extensionFields[key] ?? {},
-        args[key]
-      ));
+    final Iterable<FieldConfig> fields = configFields.keys.map((key) =>
+        FieldConfig(
+            valueProvider,
+            key,
+            config[ConfigFieldType.FIELDS][key] ?? {},
+            extensionFields[key] ?? {},
+            args[key]));
 
     return Config(config, args, fields, extension);
   }
 
   /// Target file for generated config class
-  String get filePath {
-    return 'lib/${_getConfigValue(ConfigFieldType.PATH, 'environment_config.dart')}';
-  }
+  String get filePath =>
+      'lib/${_getConfigValue(ConfigFieldType.PATH, 'environment_config.dart')}';
 
   /// Target file for `.env` params
-  String get dotEnvFilePath {
-    return _getConfigValue(ConfigFieldType.DOTENV_PATH, '.env');
-  }
+  String get dotEnvFilePath =>
+      _getConfigValue(ConfigFieldType.DOTENV_PATH, '.env')!;
 
   /// Provides config class name
   String get className {
-    String className = _getConfigValue(ConfigFieldType.CLASS);
+    String? className = _getConfigValue(ConfigFieldType.CLASS);
 
     if (className != null) {
       return className;
     }
 
     final String fileName =
-        RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath).group(1);
+        RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath)!.group(1)!;
 
     return fileName
         .split('_')
@@ -86,20 +85,18 @@ class Config {
   }
 
   /// Fields, that should be exported to `.env` file
-  Iterable<FieldConfig> get dotEnvFields {
-    return _fields.where((field) => field.isDotEnv);
-  }
+  Iterable<FieldConfig> get dotEnvFields =>
+      _fields.where((field) => field.isDotEnv);
 
   /// Fields, that should be exported to Dart config file
-  Iterable<FieldConfig> get classConfigFields {
-    return _fields.where((field) => field.isConfigField);
-  }
+  Iterable<FieldConfig> get classConfigFields =>
+      _fields.where((field) => field.isConfigField);
 
   /// Collection if imports, that should be added to config class
   Iterable<String> get imports => [
-    ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
-    ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
-  ];
+        ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
+        ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
+      ];
 
   /// If class should contain `const` constructor
   bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
@@ -110,7 +107,7 @@ class Config {
   /// Defines if generator should try to create Dart config file
   bool get createConfigClass => classConfigFields.isNotEmpty;
 
-  String _getConfigValue(key, [String defaultValue]) {
+  String? _getConfigValue(key, [String? defaultValue]) {
     if (arguments.containsKey(key) && !arguments[key].isEmpty) {
       return arguments[key];
     }

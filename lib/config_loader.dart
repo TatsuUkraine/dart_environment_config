@@ -22,7 +22,7 @@ const String _CONFIG_KEY = 'environment_config';
 /// - pubspec.yaml
 ///
 /// If no config file found will throw exception
-Future<YamlMap> loadConfig(String path) async {
+Future<YamlMap> loadConfig(String? path) async {
   List<String> files = [..._CONFIG_FILES];
 
   if (path != null) {
@@ -41,7 +41,7 @@ Future<YamlMap> loadConfig(String path) async {
       continue;
     }
 
-    final YamlMap config = loadYaml(yamlString);
+    final YamlMap? config = loadYaml(yamlString);
 
     if (config == null) {
       continue;
