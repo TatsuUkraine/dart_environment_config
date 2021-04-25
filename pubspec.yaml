@@ -1,6 +1,6 @@
 name: environment_config
 description: Environment specific config generator. Allows to specify env configuration during CI/CD build. Primarily created to simplify Flutter build configuration
-version: 2.3.0
+version: 3.0.0
 homepage: https://github.com/TatsuUkraine/dart_environment_config
 repository: https://github.com/TatsuUkraine/dart_environment_config
 issue_tracker: https://github.com/TatsuUkraine/dart_environment_config/issues
@@ -9,7 +9,7 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  dart_style: ">=2.0.0 <3.0.0"
-  code_builder: ">=4.0.0 <5.0.0"
-  args: ">=2.0.0 <3.0.0"
-  yaml: ">=3.0.0 <4.0.0"
+  dart_style: '>=2.0.0 <3.0.0'
+  code_builder: '>=4.0.0 <5.0.0'
+  args: '>=2.0.0 <3.0.0'
+  yaml: '>=3.0.0 <4.0.0'

@@ -1,3 +1,7 @@
+## [3.0.0] - 26.04.2021
+
+- migrate to null-safe
+
 ## [2.3.0] - 19.04.2021
 
 - update deps versions
