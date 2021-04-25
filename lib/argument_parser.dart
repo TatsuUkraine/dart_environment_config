@@ -14,7 +14,7 @@ class ArgumentParser {
 
   /// Defines if `config` key was specified
   /// during command run
-  String parseConfigPath() {
+  String? parseConfigPath() {
     ArgParser parser = ArgParser()..addOption(ConfigFieldType.CONFIG);
 
     final ArgResults argResults = parser.parse(
@@ -63,12 +63,10 @@ class ArgumentParser {
       );
     });
 
-    final parsedArguments = parser.parse(arguments);
+    final ArgResults parsedArguments = parser.parse(arguments);
 
-    return Map.fromIterable(
-      parsedArguments.options,
-      key: (dynamic key) => key,
-      value: (dynamic key) => parsedArguments[key],
-    );
+    return {
+      for (String key in parsedArguments.options) key: parsedArguments[key],
+    };
   }
 }
