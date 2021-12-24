@@ -69,7 +69,9 @@ class FieldConfig {
       ?? false;
 
   /// Defines if this field should be exported to Dart config file
-  bool get isConfigField => field[ConfigFieldType.CONFIG_FIELD] ?? true;
+  bool get isConfigField => extField[ConfigFieldType.CONFIG_FIELD]
+      ?? field[ConfigFieldType.CONFIG_FIELD]
+      ?? true;
 
   /// Get value for config class
   ///
