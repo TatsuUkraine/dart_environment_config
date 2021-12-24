@@ -21,13 +21,13 @@ class ConfigGenerator {
       futures.add(_generateClass());
     }
 
-    if (config.createDotEnv) {
-      futures.add(_generateDotEnv());
+    if (config.createRcFile) {
+      futures.add(_generateRcFile());
     }
 
     if (futures.isEmpty) {
       throw ValidationError(ConfigFieldType.FIELDS,
-          'At least one field should be defined for `.env` or Dart config class');
+          'At least one field should be defined for RC or Dart config class');
     }
 
     return Future.wait(futures);
@@ -69,15 +69,15 @@ class ConfigGenerator {
     stdout.writeln('Config generated at "${config.filePath}"');
   }
 
-  Future<void> _generateDotEnv() async {
-    final File configFile = File(config.dotEnvFilePath);
+  Future<void> _generateRcFile() async {
+    final File configFile = File(config.rcFilePath);
 
-    final String envString = config.dotEnvFields
-        .map((field) => '${field.name}=${field.dotEnvValue}')
+    final String envString = config.rcFields
+        .map((field) => '${field.name}=${field.rcValue}')
         .join("\r\n");
 
     await configFile.writeAsString(envString, mode: FileMode.write);
 
-    stdout.writeln('.env config generated at "${config.dotEnvFilePath}"');
+    stdout.writeln('RC config generated at "${config.rcFilePath}"');
   }
 }
