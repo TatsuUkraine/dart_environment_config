@@ -8,19 +8,29 @@ dependencies:
   environment_config:
     path: ../
 
-# Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE` to see example
+# Config example. Run `flutter pub run environment_config:generate --env=YOUR_VALUE --other=OTHER_VALUE` to see example
 environment_config:
+  rc_path: .somerc
   fields:
     env:
+    other:
+      export_to_rc: true
+      config_field: false
 
   imports:
     - some:package
 
   extensions:
     dev:
+      rc_path: .otherrc
       fields:
         env:
           default: some value
+          export_to_rc: true
+          config_field: false
+        other:
+          export_to_rc: false
+          config_field: true
 
       imports:
         - other:package
