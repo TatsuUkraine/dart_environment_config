@@ -42,7 +42,7 @@ So by default `.env` file will be generated alongside with
   - [Field configuration](#field-configuration)
     - [Fields config examples](#fields-config-examples)
       - [Pattern example](#pattern-example)
-      - [DotEnv example](#dotenv-example)
+      - [RC file example](#rc-example)
       - [Global environment variable example](#global-environment-variable-example)
   - [Extensions](#extensions)
     - [Basic Extension config usage](#basic-extension-config-usage)
@@ -61,7 +61,7 @@ Create `environment_config.yaml` or update `package.yaml` file with following co
 ```yaml
 environment_config:
   path: environment_config.dart # optional, result file path against `lib/` folder
-  dotenv_path: .env # optional, result file path for .env file against project root folder
+  rc_path: .env # optional, result file path for RC file against project root folder, if not .env name will be used
   class: EnvironmentConfig # optional, class name
   dev_extension: # optional, by default undefined, allows to specify command option to use extension
   
@@ -72,7 +72,7 @@ environment_config:
       const: # optional, default to TRUE
       pattern: # optional, specified pattern for key value, use __VALUE__ to insert entered value anywhere in the pattern
       default: # optional, default value for key, if not provided key will be required during command run
-      dotenv: # optional, default to FALSE, if this field should be added to .env file
+      export_to_rc: # optional, default to FALSE, if this field should be added to RC file
       config_field: # optional, default to TRUE, if this field should be added to Dart file
       env_var: # optional, global environment variable name
       static: # options, default to TRUE, if this field should be static, if FALSE, `const` will be be ignored
@@ -82,14 +82,19 @@ environment_config:
       
   extensions: # set of extensions for default field list
     some_extension: # extension name
-      some_key:
-        const: # optional, overrides `const` value for the field
-        pattern: # optional, overrides `pattern` value for the field
-        default: # optional, overrides `default` value for the field
-        env_var: # optional, overrides `env_var` value for the field
+      path: # optional, if not specified, original key is used
+      rc_path: # optional, if not specified, original key is used
+      class: # optional, if not specified, original key is used
+      fields:
+        some_key:
+          const: # optional, overrides `const` value for the field
+          pattern: # optional, overrides `pattern` value for the field
+          export_to_rc: # optional, overrides `export_to_rc` value for the field
+          default: # optional, overrides `default` value for the field
+          env_var: # optional, overrides `env_var` value for the field
         
-    imports: # optional, adds set of imports to main configulration
-      - package:some_other_package
+      imports: # optional, adds set of imports to main configuration
+        - package:some_other_package
       
 ```
 
@@ -193,7 +198,7 @@ flutter pub run environment_config:generate --config=path/to/file.yaml
 Class and file can be configured with next options
 
 - `path` - path to file against `lib` folder, by default it's `environment_config.dart`
-- `dotenv_path` - path to file against root app folder, by default it's
+- `rc_path` - path to file against root app folder, by default it's
   `.env`
 - `class` - class name, by default will be generated based on file name
 - `const` - optional, defines if class constructor should be
@@ -209,7 +214,7 @@ If `class` is not specified value for class name will be generate based
 on file name in `path` field. It will convert `snake_case` into
 `CamelCase`.
 
-Field `dotenv_path` will be used only if at least one field contains `dotenv: true`
+Field `rc_path` will be used only if at least one field contains `export_to_rc: true`
 
 ### Config Examples
 
@@ -291,15 +296,15 @@ Each field accepts next params, each param is **optional**
 - `default` - default value for the field. If not specified, field will be treated as required
 - `short_name` - short key name, that can be used during command run
 instead of full field name. Accepts 1 symbol values only
-- `dotenv` - bool flag, if `TRUE` this field will be added to `.env` file.
+- `export_to_rc` - bool flag, if `TRUE` this field will be added to RC file.
 - `env_var` - environment global variable name
 - `config_field` - default to `TRUE`, indicates if this field should be
   defined in Dart class config
 
-**If you want to generate `.env` file in addition to class config, at least ONE
-key should have `dotenv` to be TRUE. Otherwise `.env` file won't be generated**
+**If you want to generate RC file in addition to class config, at least ONE
+key should have `export_to_rc` to be TRUE. Otherwise RC file won't be generated**
 
-**If field contains `dotenv: false` (which is default state) and
+**If field contains `export_to_rc: false` (which is default state) and
 `config_field: false` field will be ignored**
 
 **Note** If field config doesn't have `default` key specified it will be
@@ -351,22 +356,22 @@ class EnvironmentConfig {
 
 ```
 
-#### DotEnv example
+#### RC example
 
-To create `.env` at least one key should have `dotenv: true` attribute
+To create RC file (by default it's going to be `.env`) at least one key should have `export_to_rc: true` attribute
 ```yaml
 environment_config:
   fields:
     first_key: # define field only in Dart class
       type: num
     second_key:
-      dotenv: true # will define field in Dart and in `.env`
+      export_to_rc: true # will define field in Dart and in RC file
     third_key:
-      dotenv: true # will define field in `.env`
+      export_to_rc: true # will define field in RC file
       config_field: false # will exclude field from Dart config file
 ```
 
-**Note** If `dotenv: false` and `config_field: false` this field won't
+**Note** If `export_to_rc: false` and `config_field: false` this field won't
 be added to `.env` and Dart config class
 
 This command
@@ -420,6 +425,11 @@ Generator will use next priority:
 Extensions allows you to define set of override rules for fields and
 imports.
 
+Extension is able to override following main config items:
+- path
+- rc_path
+- class
+
 Primarily extensions are needed to override main configuration and
 provide some specific settings for environment like dev. That is why it
 allows to override just specific set of configuration keys for specific
@@ -428,6 +438,7 @@ field:
 - pattern
 - default
 - env_var
+- export_to_rc
 
 Extension won't override other field keys to keep config class signature
 consistent (if you need to add other keys in this list, feel free to

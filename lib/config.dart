@@ -64,8 +64,8 @@ class Config {
       'lib/${_getConfigValue(ConfigFieldType.PATH, 'environment_config.dart')}';
 
   /// Target file for `.env` params
-  String get dotEnvFilePath =>
-      _getConfigValue(ConfigFieldType.DOTENV_PATH, '.env')!;
+  String get rcFilePath =>
+      _getConfigValue(ConfigFieldType.RC_PATH, '.env')!;
 
   /// Provides config class name
   String get className {
@@ -85,8 +85,8 @@ class Config {
   }
 
   /// Fields, that should be exported to `.env` file
-  Iterable<FieldConfig> get dotEnvFields =>
-      _fields.where((field) => field.isDotEnv);
+  Iterable<FieldConfig> get rcFields =>
+      _fields.where((field) => field.isExportToRc);
 
   /// Fields, that should be exported to Dart config file
   Iterable<FieldConfig> get classConfigFields =>
@@ -102,17 +102,21 @@ class Config {
   bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
 
   /// Defines if generator should try to create `.env` file
-  bool get createDotEnv => dotEnvFields.isNotEmpty;
+  bool get createRcFile => rcFields.isNotEmpty;
 
   /// Defines if generator should try to create Dart config file
   bool get createConfigClass => classConfigFields.isNotEmpty;
 
   String? _getConfigValue(key, [String? defaultValue]) {
-    if (arguments.containsKey(key) && !arguments[key].isEmpty) {
+    if (arguments.containsKey(key) && arguments[key].isNotEmpty) {
       return arguments[key];
     }
 
-    if (config.containsKey(key) && !(config[key] ?? '').isEmpty) {
+    if (ConfigFieldType.EXTENDED_CONFIG_FIELDS.contains(key) && extConfig.containsKey(key) && (extConfig[key] ?? '').isNotEmpty) {
+      return extConfig[key];
+    }
+
+    if (config.containsKey(key) && (config[key] ?? '').isNotEmpty) {
       return config[key];
     }
 

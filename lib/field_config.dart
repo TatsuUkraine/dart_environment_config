@@ -64,10 +64,14 @@ class FieldConfig {
   bool get isStatic => field[ConfigFieldType.STATIC] ?? true;
 
   /// Defines if this field should be exported to `.env` file
-  bool get isDotEnv => field[ConfigFieldType.IS_DOTENV] ?? false;
+  bool get isExportToRc => extField[ConfigFieldType.EXPORT_TO_RC]
+      ?? field[ConfigFieldType.EXPORT_TO_RC]
+      ?? false;
 
   /// Defines if this field should be exported to Dart config file
-  bool get isConfigField => field[ConfigFieldType.CONFIG_FIELD] ?? true;
+  bool get isConfigField => extField[ConfigFieldType.CONFIG_FIELD]
+      ?? field[ConfigFieldType.CONFIG_FIELD]
+      ?? true;
 
   /// Get value for config class
   ///
@@ -87,7 +91,7 @@ class FieldConfig {
   }
 
   /// Value for key in `.env` file
-  String get dotEnvValue =>
+  String get rcValue =>
       _pattern?.replaceAll(_PATTERN_REGEXP, _fieldValue!) ?? _fieldValue!;
 
   String? get _pattern =>

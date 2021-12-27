@@ -6,7 +6,7 @@ class ConfigFieldType {
   static const String IMPORTS = 'imports';
   static const String CLASS = 'class';
   static const String PATH = 'path';
-  static const String DOTENV_PATH = 'dotenv_path';
+  static const String RC_PATH = 'rc_path';
   static const String DEV_EXTENSION = 'dev_extension';
   static const String EXTENSIONS = 'extensions';
 
@@ -15,8 +15,14 @@ class ConfigFieldType {
   static const String DEFAULT = 'default';
   static const String CONST = 'const';
   static const String SHORT_NAME = 'short_name';
-  static const String IS_DOTENV = 'dotenv';
+  static const String EXPORT_TO_RC = 'export_to_rc';
   static const String ENV_VAR = 'env_var';
   static const String CONFIG_FIELD = 'config_field';
   static const String STATIC = 'static';
+
+  static const List<String> EXTENDED_CONFIG_FIELDS = [
+    PATH,
+    RC_PATH,
+    CLASS,
+  ];
 }
