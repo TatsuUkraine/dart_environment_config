@@ -26,7 +26,7 @@ class FieldConfig {
       [String? value])
       : _value = value,
         _valueProvider = valueProvider {
-    if (_fieldValue == null) {
+    if (!_nullable && _fieldValue == null) {
       throw ValidationError(name, '"$name" is required');
     }
   }
@@ -79,6 +79,10 @@ class FieldConfig {
       pattern = '\'__VALUE__\'';
     }
 
+    if (_nullable && (_fieldValue == null || _fieldValue == 'null')) {
+      return 'null';
+    }
+
     if (pattern == null) {
       return _fieldValue!;
     }
@@ -109,6 +113,8 @@ class FieldConfig {
           extField[ConfigFieldType.DEFAULT] ??
           field[ConfigFieldType.DEFAULT])
       ?.toString();
+
+  bool get _nullable => type.contains(RegExp(r'\?$'));
 
   bool get _isStringType => const ['String', 'String?'].contains(type);
 }

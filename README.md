@@ -52,7 +52,9 @@ So by default `.env` file will be generated alongside with
 
 ## Getting Started
 
-Install package as dependency.
+Install package as dependency. Or use global active
+
+`dart pub global activate environment_config`
 
 Create `environment_config.yaml` or update `package.yaml` file with following code
 
@@ -93,7 +95,7 @@ environment_config:
       
 ```
 
-Run `pub get` to install dependencies.
+Run `pub get` to install dependencies. (if you installed it as deps in you project)
 
 After config is specified in YAML file run following command
 
@@ -104,6 +106,12 @@ Or for flutter project
 
 ```
 flutter pub run environment_config:generate --some_key=some_value
+```
+
+Or just next command if you installed package globally
+
+```
+environment-config-generate --some_key=some_value
 ```
 
 This command with generate file, that was specified in `path` key with
