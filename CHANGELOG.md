@@ -1,3 +1,8 @@
+## [3.1.0] - 26.05.2022
+
+- better support for nullable fields
+- allow register package globally
+
 ## [3.0.0] - 26.04.2021
 
 - migrate to null-safe
