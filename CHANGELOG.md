@@ -1,3 +1,8 @@
+## [3.2.0] - 06.09.2024
+
+- update minimum supported SDK version to Dart 3.5.
+- fix error message typo
+
 ## [3.1.0] - 26.05.2022
 
 - better support for nullable fields
