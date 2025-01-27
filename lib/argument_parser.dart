@@ -52,7 +52,7 @@ class ArgumentParser {
 
     params.keys.forEach((key) {
       if (params[key] != null && params[key] is! Map) {
-        throw MalformedConfigError('Mailformed config');
+        throw MalformedConfigError('Malformed config');
       }
 
       final Map<dynamic, dynamic> value = params[key] ?? {};
