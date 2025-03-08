@@ -1,3 +1,6 @@
+## [4.0.0] - 06.03.2025
+- update dart style version to >=3.0.0 <4.0.0
+
 ## [3.2.0] - 06.09.2024
 
 - update minimum supported SDK version to Dart 3.5.
