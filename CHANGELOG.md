@@ -1,3 +1,6 @@
+## [4.0.0+1] - 06.03.2025
+- codestyle adjustments
+
 ## [4.0.0] - 06.03.2025
 - update dart style version to >=3.0.0 <4.0.0
 

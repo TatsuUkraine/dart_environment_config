@@ -4,7 +4,7 @@ import 'config_field_type.dart';
 import 'errors/validation_error.dart';
 import 'platform_value_provider.dart';
 
-final RegExp _PATTERN_REGEXP = RegExp(r'__VALUE__');
+final RegExp _patternRegexp = RegExp(r'__VALUE__');
 
 class FieldConfig {
   /// Field name
@@ -87,12 +87,12 @@ class FieldConfig {
       return _fieldValue!;
     }
 
-    return pattern.replaceAll(_PATTERN_REGEXP, _fieldValue!);
+    return pattern.replaceAll(_patternRegexp, _fieldValue!);
   }
 
   /// Value for key in `.env` file
   String get dotEnvValue =>
-      _pattern?.replaceAll(_PATTERN_REGEXP, _fieldValue!) ?? _fieldValue!;
+      _pattern?.replaceAll(_patternRegexp, _fieldValue!) ?? _fieldValue!;
 
   String? get _pattern =>
       extField[ConfigFieldType.PATTERN] ?? field[ConfigFieldType.PATTERN];

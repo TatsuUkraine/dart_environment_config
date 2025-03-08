@@ -17,7 +17,7 @@ const String _CONFIG_KEY = 'environment_config';
 ///
 /// If it's not provided or not found will try to find config in following files
 ///
-/// - <custom_path>
+/// - *custom_path*
 /// - environment_config.yaml
 /// - pubspec.yaml
 ///
