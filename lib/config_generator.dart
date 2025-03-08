@@ -60,7 +60,7 @@ class ConfigGenerator {
             ]));
 
     final classDefinition =
-        DartFormatter().format('${library.accept(DartEmitter())}');
+        DartFormatter(languageVersion: DartFormatter.latestLanguageVersion).format('${library.accept(DartEmitter())}');
 
     final File configFile = File(config.filePath);
 
