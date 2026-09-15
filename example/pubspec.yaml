@@ -13,7 +13,8 @@ dependencies:
 environment_config:
   fields:
     env:
-
+  ignore_for_file:
+    - "type=lint"
   imports:
     - some:package
 

@@ -9,6 +9,7 @@ class ConfigFieldType {
   static const String DOTENV_PATH = 'dotenv_path';
   static const String DEV_EXTENSION = 'dev_extension';
   static const String EXTENSIONS = 'extensions';
+  static const String IGNORE_FOR_FILE = 'ignore_for_file';
 
   static const String TYPE = 'type';
   static const String PATTERN = 'pattern';
