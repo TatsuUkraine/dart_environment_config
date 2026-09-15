@@ -10,19 +10,21 @@ import 'config_loader.dart';
 Future<void> generateConfig(List<String> arguments) {
   final parser = ArgumentParser(arguments);
 
-  return loadConfig(parser.parseConfigPath()).then((yamlConfig) {
-    return Config.fromMap(
-      PlatformValueProvider(),
-      yamlConfig,
-      parser.parseArguments(yamlConfig),
-    );
-  }).then((config) {
-    return ConfigGenerator(config).generate();
-  }).then((_) {
-    exitCode = 0;
-  }).catchError((e) {
-    exitCode = 2;
+  return loadConfig(parser.parseConfigPath())
+      .then(
+        (yamlConfig) => Config.fromMap(
+          PlatformValueProvider(),
+          yamlConfig,
+          parser.parseArguments(yamlConfig),
+        ),
+      )
+      .then((config) => ConfigGenerator(config).generate())
+      .then((_) {
+        exitCode = 0;
+      })
+      .catchError((e) {
+        exitCode = 2;
 
-    stderr.writeln(e);
-  });
+        stderr.writeln(e);
+      });
 }

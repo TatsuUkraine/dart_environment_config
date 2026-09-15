@@ -18,7 +18,8 @@ class ArgumentParser {
     ArgParser parser = ArgParser()..addOption(ConfigFieldType.CONFIG);
 
     final ArgResults argResults = parser.parse(
-        arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}=')));
+      arguments.where((arg) => arg.contains('--${ConfigFieldType.CONFIG}=')),
+    );
 
     if (!argResults.options.contains(ConfigFieldType.CONFIG)) {
       return null;
@@ -37,7 +38,9 @@ class ArgumentParser {
 
     if (config[ConfigFieldType.FIELDS] == null) {
       throw ValidationError(
-          ConfigFieldType.FIELDS, 'At least one field should be specified');
+        ConfigFieldType.FIELDS,
+        'At least one field should be specified',
+      );
     }
 
     final params = config[ConfigFieldType.FIELDS];
@@ -57,10 +60,7 @@ class ArgumentParser {
 
       final Map<dynamic, dynamic> value = params[key] ?? {};
 
-      parser.addOption(
-        key,
-        abbr: value[ConfigFieldType.SHORT_NAME],
-      );
+      parser.addOption(key, abbr: value[ConfigFieldType.SHORT_NAME]);
     });
 
     final ArgResults parsedArguments = parser.parse(arguments);
