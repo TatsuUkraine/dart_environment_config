@@ -44,9 +44,10 @@ class ArgumentParser {
     }
 
     final params = config[ConfigFieldType.FIELDS];
+    final devExtension = config[ConfigFieldType.DEV_EXTENSION];
 
-    if (config.containsKey(ConfigFieldType.DEV_EXTENSION)) {
-      parser.addFlag(config[ConfigFieldType.DEV_EXTENSION]);
+    if (devExtension is String) {
+      parser.addFlag(devExtension);
     }
 
     parser

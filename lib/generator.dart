@@ -22,9 +22,10 @@ Future<void> generateConfig(List<String> arguments) {
       .then((_) {
         exitCode = 0;
       })
-      .catchError((e) {
+      .catchError((e, stackTrace) {
         exitCode = 2;
 
         stderr.writeln(e);
+        stderr.write(stackTrace);
       });
 }
