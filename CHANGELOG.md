@@ -1,3 +1,7 @@
+## [4.1.0] - 15.09.2026
+- update min version to Dart 3.8
+- add support for lint comments for class config type generation
+
 ## [4.0.0+1] - 06.03.2025
 - codestyle adjustments
 
