@@ -18,11 +18,17 @@ class Config {
   final Iterable<FieldConfig> _fields;
 
   Config(
-      this.config, this.arguments, Iterable<FieldConfig> fields, this.extConfig)
-      : _fields = fields;
+    this.config,
+    this.arguments,
+    Iterable<FieldConfig> fields,
+    this.extConfig,
+  ) : _fields = fields;
 
-  factory Config.fromMap(PlatformValueProvider valueProvider,
-      Map<dynamic, dynamic> config, Map<String, dynamic> args) {
+  factory Config.fromMap(
+    PlatformValueProvider valueProvider,
+    Map<dynamic, dynamic> config,
+    Map<String, dynamic> args,
+  ) {
     final String? devExtension = config[ConfigFieldType.DEV_EXTENSION];
     final Map<dynamic, dynamic> configFields = config[ConfigFieldType.FIELDS];
     final Map<dynamic, dynamic> extensions =
@@ -48,13 +54,15 @@ class Config {
     Map<dynamic, dynamic> extensionFields =
         extension[ConfigFieldType.FIELDS] ?? {};
 
-    final Iterable<FieldConfig> fields = configFields.keys.map((key) =>
-        FieldConfig(
-            valueProvider,
-            key,
-            config[ConfigFieldType.FIELDS][key] ?? {},
-            extensionFields[key] ?? {},
-            args[key]));
+    final Iterable<FieldConfig> fields = configFields.keys.map(
+      (key) => FieldConfig(
+        valueProvider,
+        key,
+        config[ConfigFieldType.FIELDS][key] ?? {},
+        extensionFields[key] ?? {},
+        args[key],
+      ),
+    );
 
     return Config(config, args, fields, extension);
   }
@@ -75,8 +83,9 @@ class Config {
       return className;
     }
 
-    final String fileName =
-        RegExp(r'\/([\w_-]+)\.dart$').firstMatch(filePath)!.group(1)!;
+    final String fileName = RegExp(
+      r'\/([\w_-]+)\.dart$',
+    ).firstMatch(filePath)!.group(1)!;
 
     return fileName
         .split('_')
@@ -94,9 +103,14 @@ class Config {
 
   /// Collection if imports, that should be added to config class
   Iterable<String> get imports => [
-        ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
-        ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
-      ];
+    ...(config[ConfigFieldType.IMPORTS]?.toList() ?? []),
+    ...(extConfig[ConfigFieldType.IMPORTS]?.toList() ?? []),
+  ];
+
+  Iterable<String> get ignoreForFile => [
+    ...?config[ConfigFieldType.IGNORE_FOR_FILE]?.toList(),
+    ...?extConfig[ConfigFieldType.IGNORE_FOR_FILE]?.toList(),
+  ];
 
   /// If class should contain `const` constructor
   bool get isClassConst => config[ConfigFieldType.CONST] ?? false;
