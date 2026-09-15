@@ -1,3 +1,9 @@
+## [4.1.1+1] - 15.09.2026
+- fix min deps version constraint
+
+## [4.1.1] - 15.09.2026
+- add type check for dev extension value ([#40](https://github.com/TatsuUkraine/dart_environment_config/issues/40))
+
 ## [4.1.0] - 15.09.2026
 - update min version to Dart 3.8
 - add support for lint comments for class config type generation
