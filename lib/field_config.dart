@@ -22,10 +22,13 @@ class FieldConfig {
   final PlatformValueProvider _valueProvider;
 
   FieldConfig(
-      PlatformValueProvider valueProvider, this.name, this.field, this.extField,
-      [String? value])
-      : _value = value,
-        _valueProvider = valueProvider {
+    PlatformValueProvider valueProvider,
+    this.name,
+    this.field,
+    this.extField, [
+    String? value,
+  ]) : _value = value,
+       _valueProvider = valueProvider {
     if (!_nullable && _fieldValue == null) {
       throw ValidationError(name, '"$name" is required');
     }
@@ -108,11 +111,12 @@ class FieldConfig {
     return null;
   }
 
-  String? get _fieldValue => (_value ??
-          _globalValue ??
-          extField[ConfigFieldType.DEFAULT] ??
-          field[ConfigFieldType.DEFAULT])
-      ?.toString();
+  String? get _fieldValue =>
+      (_value ??
+              _globalValue ??
+              extField[ConfigFieldType.DEFAULT] ??
+              field[ConfigFieldType.DEFAULT])
+          ?.toString();
 
   bool get _nullable => type.contains(RegExp(r'\?$'));
 

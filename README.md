@@ -66,6 +66,8 @@ environment_config:
   dotenv_path: .env # optional, result file path for .env file against project root folder
   class: EnvironmentConfig # optional, class name
   dev_extension: # optional, by default undefined, allows to specify command option to use extension
+  ignore_for_file: #optional, list of ignore_for_file items to add to the file
+    - "type=lint"
   
   fields: # set of fields for command
     some_key: # key name

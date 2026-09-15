@@ -26,8 +26,10 @@ class ConfigGenerator {
     }
 
     if (futures.isEmpty) {
-      throw ValidationError(ConfigFieldType.FIELDS,
-          'At least one field should be defined for `.env` or Dart config class');
+      throw ValidationError(
+        ConfigFieldType.FIELDS,
+        'At least one field should be defined for `.env` or Dart config class',
+      );
     }
 
     return Future.wait(futures);
@@ -37,30 +39,39 @@ class ConfigGenerator {
     List<Constructor> constructors = [];
 
     if (config.isClassConst) {
-      constructors.add(Constructor(
-          (ConstructorBuilder builder) => builder..constant = true));
+      constructors.add(
+        Constructor((ConstructorBuilder builder) => builder..constant = true),
+      );
     }
 
-    final Library library =
-        Library((LibraryBuilder builder) => builder.body.addAll([
-              ...config.imports
-                  .map((String import) => Directive.import(import)),
-              Class((ClassBuilder builder) => builder
-                ..constructors.addAll(constructors)
-                ..name = config.className
-                ..fields.addAll(
-                    config.classConfigFields.map((FieldConfig field) => Field(
-                          (FieldBuilder builder) => builder
-                            ..name = field.name
-                            ..static = field.isStatic
-                            ..modifier = field.modifier
-                            ..type = Reference(field.type)
-                            ..assignment = Code(field.value),
-                        )))),
-            ]));
+    final Library library = Library(
+      (LibraryBuilder builder) => builder
+        ..body.addAll([
+          ...config.imports.map((String import) => Directive.import(import)),
+          Class(
+            (ClassBuilder builder) => builder
+              ..constructors.addAll(constructors)
+              ..name = config.className
+              ..fields.addAll(
+                config.classConfigFields.map(
+                  (FieldConfig field) => Field(
+                    (FieldBuilder builder) => builder
+                      ..name = field.name
+                      ..static = field.isStatic
+                      ..modifier = field.modifier
+                      ..type = Reference(field.type)
+                      ..assignment = Code(field.value),
+                  ),
+                ),
+              ),
+          ),
+        ])
+        ..ignoreForFile.addAll(config.ignoreForFile),
+    );
 
-    final classDefinition =
-        DartFormatter(languageVersion: DartFormatter.latestLanguageVersion).format('${library.accept(DartEmitter())}');
+    final classDefinition = DartFormatter(
+      languageVersion: DartFormatter.latestLanguageVersion,
+    ).format('${library.accept(DartEmitter())}');
 
     final File configFile = File(config.filePath);
 
