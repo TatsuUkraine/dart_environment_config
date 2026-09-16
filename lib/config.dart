@@ -121,7 +121,7 @@ class Config {
   /// Defines if generator should try to create Dart config file
   bool get createConfigClass => classConfigFields.isNotEmpty;
 
-  String? _getConfigValue(key, [String? defaultValue]) {
+  String? _getConfigValue(String key, [String? defaultValue]) {
     if (arguments.containsKey(key) && !arguments[key].isEmpty) {
       return arguments[key];
     }
