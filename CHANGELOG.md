@@ -1,5 +1,6 @@
-## [4.1.1+1] - 15.09.2026
+## [4.1.2] - 16.09.2026
 - fix min deps version constraint
+- add missing type for param
 
 ## [4.1.1] - 15.09.2026
 - add type check for dev extension value ([#40](https://github.com/TatsuUkraine/dart_environment_config/issues/40))
